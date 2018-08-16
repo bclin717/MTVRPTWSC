@@ -7,9 +7,19 @@
 
 
 class TimeWindow {
+public:
+
+    int getLowerBound();
+
+    void setLowerBound(int lb);
+
+    int getUpperBound();
+
+    void setUpperBound(int ub);
+
 private:
-    int LowerBound;
-    int UpperBound;
+    int _lowerBound;
+    int _upperBound;
 };
 
 

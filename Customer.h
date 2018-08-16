@@ -9,12 +9,41 @@
 #include "TimeWindow.h"
 
 class Customer {
+public:
+    int getID();
+
+    void setID(int id);
+
+    int getDemandQuantity();
+
+    void setDemandQuantity(int dq);
+
+    int getServiceTime();
+
+    void setServiceTime(int st);
+
+    int getT();
+
+    void setT(int t);
+
+    float getProbability();
+
+    void setProbability(float p);
+
+    TimeWindow getTimeWindow();
+
+    void setTimeWindow(TimeWindow tw);
+
 private:
-    int x;
-    int y;
-    int demandQuantity;
-    int serviceTime;
-    TimeWindow timeWindow;
+    int _id;
+    int _x;
+    int _y;
+    int _demandQuantity;
+    int _serviceTime;
+    int _t;
+    float _probability;
+    TimeWindow _timeWindow;
+
 };
 
 

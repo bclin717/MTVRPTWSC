@@ -1,13 +1,12 @@
 #include "Param.h"
 
-using namespace std;
-
 Route algorithm1() {
 
 }
 
 int main() {
 
+    cout << "hello world!" << endl;
 
     return 0;
 }
