@@ -8,6 +8,9 @@
 
 class TimeWindow {
 public:
+    TimeWindow();
+
+    TimeWindow(const TimeWindow &t);
 
     int getLowerBound();
 

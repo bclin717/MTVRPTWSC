@@ -4,6 +4,6 @@
 
 #include "Car.h"
 
-Route Car::getRoute() { return _route; }
+Route Car::getRoute() { return Route(_route); }
 
 void Car::setRoute(Route r) { _route = Route(r); }

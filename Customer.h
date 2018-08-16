@@ -10,28 +10,25 @@
 
 class Customer {
 public:
+    Customer();
+
+    Customer(int id);
+
+    Customer(const Customer &_c);
+
+    static bool cmp(const Customer &c1, const Customer &c2);
+
     int getID();
-
     void setID(int id);
-
     int getDemandQuantity();
-
     void setDemandQuantity(int dq);
-
     int getServiceTime();
-
     void setServiceTime(int st);
-
     int getT();
-
     void setT(int t);
-
     float getProbability();
-
     void setProbability(float p);
-
     TimeWindow getTimeWindow();
-
     void setTimeWindow(TimeWindow tw);
 
 private:
@@ -44,6 +41,7 @@ private:
     float _probability;
     TimeWindow _timeWindow;
 
+    void initialParams();
 };
 
 
