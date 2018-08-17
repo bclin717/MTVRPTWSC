@@ -1,18 +1,33 @@
 #include "Param.h"
 
-Route algorithm1() {
-
-}
-
-Route algorithm2() {
-
-}
-
 vector<Customer> dCustomers;
 vector<Customer> sCustomers;
 
 vector<Customer> L1;
 vector<Customer> L2;
+
+
+void algorithm1() {
+
+}
+
+Route algorithm2() {
+    return Route();
+}
+
+Route algorithm3() {
+    while (L2.size() != 0) {
+        Customer c = Customer(L2.at(0));
+        L2.erase(L2.begin());
+
+        /*algorithm3
+            ...
+            ...
+            ...
+        */
+    }
+    return Route();
+}
 
 int main() {
 
@@ -49,8 +64,9 @@ int main() {
     // Sorting
     sort(L2.begin(), L2.end(), Customer::cmp);
 
-    algorithm2();
+    Route S = algorithm2();
 
+    Route S2 = algorithm3();
 
     return 0;
 }
