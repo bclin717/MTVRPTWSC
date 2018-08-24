@@ -12,6 +12,7 @@ void algorithm1() {
 }
 
 Route algorithm2() {
+    // TODO algorithm2
     return Route();
 }
 
@@ -20,6 +21,7 @@ Route algorithm3() {
         Customer c = Customer(L2.at(0));
         L2.erase(L2.begin());
 
+        // TODO algorithm3
         /*algorithm3
             ...
             ...
@@ -28,6 +30,12 @@ Route algorithm3() {
     }
     return Route();
 }
+
+void algorithm4() {
+
+}
+
+
 
 int main() {
 

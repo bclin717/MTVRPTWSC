@@ -25,4 +25,8 @@ static vector<Scenario> scenarios;
 static const int NumberOfDeterministicCustomers = 15;
 static const int NumberOfStochasticCustomers = 15;
 
+const int distanceMatrix[NumberOfDeterministicCustomers][NumberOfDeterministicCustomers] = {
+
+};
+
 #endif //MTVRPTWSC_PARAM_H
