@@ -12,11 +12,19 @@ Route::Route(const Route &r) {
     _overhead = r._overhead;
 }
 
-vector<int> Route::getCustomerIDs() { return _customerIDs; }
+vector<int> Route::getCustomerIDs() {
+    return _customerIDs;
+}
 
-vector<int> Route::getTime() { return _time; }
+vector<int> Route::getTime() {
+    return _time;
+}
 
-int Route::getOverhead() { return _overhead; }
+int Route::getOverhead() {
+    return _overhead;
+}
 
-void Route::setOverhead(int overhead) { _overhead = overhead; }
+void Route::setOverhead(int overhead) {
+    _overhead = overhead;
+}
 

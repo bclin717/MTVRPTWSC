@@ -36,27 +36,51 @@ bool Customer::cmp(const Customer &c1, const Customer &c2) {
     return c1._probability > c2._probability;
 }
 
-int Customer::getID() { return _id; }
+int Customer::getID() {
+    return _id;
+}
 
-void Customer::setID(int id) { _id = id; }
+void Customer::setID(int id) {
+    _id = id;
+}
 
-int Customer::getDemandQuantity() { return _demandQuantity; }
+int Customer::getDemandQuantity() {
+    return _demandQuantity;
+}
 
-void Customer::setDemandQuantity(int dq) { _demandQuantity = dq; }
+void Customer::setDemandQuantity(int dq) {
+    _demandQuantity = dq;
+}
 
-int Customer::getServiceTime() { return _serviceTime; }
+int Customer::getServiceTime() {
+    return _serviceTime;
+}
 
-void Customer::setServiceTime(int st) { _serviceTime = st; }
+void Customer::setServiceTime(int st) {
+    _serviceTime = st;
+}
 
-int Customer::getT() { return _t; }
+int Customer::getT() {
+    return _t;
+}
 
-void Customer::setT(int t) { _t = t; }
+void Customer::setT(int t) {
+    _t = t;
+}
 
-float Customer::getProbability() { return _probability; }
+float Customer::getProbability() {
+    return _probability;
+}
 
-void Customer::setProbability(float p) { _probability = p; }
+void Customer::setProbability(float p) {
+    _probability = p;
+}
 
-TimeWindow Customer::getTimeWindow() { return TimeWindow(_timeWindow); }
+TimeWindow Customer::getTimeWindow() {
+    return TimeWindow(_timeWindow);
+}
 
-void Customer::setTimeWindow(TimeWindow tw) { _timeWindow = TimeWindow(tw); }
+void Customer::setTimeWindow(TimeWindow tw) {
+    _timeWindow = TimeWindow(tw);
+}
 
