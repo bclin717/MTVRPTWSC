@@ -26,6 +26,8 @@ static vector<Scenario> scenarios;
 static const int NumberOfDeterministicCustomers = 16;
 static const int NumberOfStochasticCustomers = 16;
 
+static const int NumberOfChromosome = 10;
+
 const float distanceMatrix[NumberOfDeterministicCustomers][NumberOfDeterministicCustomers] = {
         {0.00,13.96,7.06,7.92,10.94,14.37,13.30,6.99,11.87,19.36,11.13,15.04,10.79,13.86,20.95,17.88},
         {13.96,0.00,9.93,5.78,11.13,12.72,0.77,7.01,5.06,7.39,3.41,1.09,8.74,2.64,7.16,3.92},
