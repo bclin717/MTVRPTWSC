@@ -16,6 +16,7 @@
 #include "Car.h"
 #include "Scenario.h"
 #include "Link.h"
+#include "Chromosome.h"
 
 using namespace std;
 
