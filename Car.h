@@ -10,12 +10,8 @@
 
 class Car {
 public:
-    Route getRoute();
+    std::vector<int> route;
 
-    void setRoute(Route r);
-
-private:
-    Route _route;
 };
 
 

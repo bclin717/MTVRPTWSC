@@ -2,26 +2,24 @@
 // Created by kevin on 2018/9/1.
 //
 
-#ifndef MTVRPTWSC_CHROMOSOME_H
-#define MTVRPTWSC_CHROMOSOME_H
-
-#include "Route.h"
+#include "Param.h"
 
 class Chromosome {
 public:
-    Chromosome();
+    Chromosome(std::vector<Customer>& c);
 
     void ClarkeAndWright();
 
-    std::vector<int> getIDs();
+    std::vector<Customer> getIDs();
+
+    void calculateFitnessValue();
 
 
 
 private:
     bool ifInRoute(int num, std::vector<int> ids);
-
+    std::vector<Customer> _customers;
     std::vector<int> _ids;
+    float _fitnewssValue;
 
 };
-
-#endif //MTVRPTWSC_CHROMOSOME_H

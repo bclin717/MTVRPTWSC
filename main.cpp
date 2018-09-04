@@ -6,10 +6,6 @@ vector<Customer> sCustomers;
 vector<Customer> L1;
 vector<Customer> L2;
 
-
-
-
-
 void algorithm1() {
 
 }
@@ -19,17 +15,16 @@ void adsplit() {
 }
 
 Route algorithm2() {
-    Chromosome chromosome[NumberOfChromosome];
-    chromosome[0].ClarkeAndWright();
+    vector<Chromosome> chromosomes;
+    for(int i = 0; i < NumberOfChromosome; i++)
+        chromosomes.emplace_back(Chromosome(L1));
 
     for(int i = 0; i < NumberOfChromosome; i++) {
-        chromosome[i].getIDs();
+        chromosomes.at(i).getIDs();
     }
 
 
-    //
-
-    // TODO algorithm2
+    //TODO algorithm2
 
     return Route();
 }

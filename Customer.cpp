@@ -23,7 +23,7 @@ Customer::Customer(const Customer &_c) {
 
 void Customer::initialParams() {
     _id = -1;
-    _demandQuantity = -1;
+    _demandQuantity = 1;
     _probability = 1;
     _serviceTime = -1;
     _x = 0;

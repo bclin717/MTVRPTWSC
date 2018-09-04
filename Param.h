@@ -24,6 +24,12 @@ static const int CurrentBestValue = 9999999;
 static const float PriorityThresholdValue = 0.5;
 static vector<Scenario> scenarios;
 
+static const int NumberOfVehicle = 15;
+static const int CapacityOfVehicle = 4;
+static const int PenalizationFactor = 0.5;
+
+static const int serviceTime = 10;
+
 static const int NumberOfDeterministicCustomers = 16;
 static const int NumberOfStochasticCustomers = 16;
 
@@ -47,5 +53,6 @@ const float distanceMatrix[NumberOfDeterministicCustomers][NumberOfDeterministic
         {20.95,7.16,15.87,4.53,15.51,15.58,7.72,13.96,11.51,4.62,10.50,6.17,13.34,8.56,0.00,3.39},
         {17.88,3.92,13.39,4.45,13.77,14.56,4.58,10.91,8.12,5.59,7.16,2.87,11.44,5.18,3.39,0.00}
 };
+
 
 #endif //MTVRPTWSC_PARAM_H
