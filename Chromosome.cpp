@@ -81,13 +81,14 @@ float Chromosome::calculateFitnessValue() {
     float TW = 0;
     int LOAD = 0;
     int carCount = 0;
+    car[carCount].route.push_back(0);
     for(unsigned int i = 1; i < _customers.size(); i++) {
-        car[carCount].route.emplace_back(_customers.at(i).getID());
         LOAD += _customers.at(i).getDemandQuantity();
         if(LOAD > CapacityOfVehicle) {
             COST += (distanceMatrix[_customers.at(i).getID()][0] * SpeedKmMin);
-            carCount++;
+            car[++carCount].route.push_back(0);
             i--;
+            LOAD = 0;
             continue;
         } else {
             TW = COST > _customers.at(i).getTimeWindow().getLowerBound() ? COST : _customers.at(i).getTimeWindow().getLowerBound();
