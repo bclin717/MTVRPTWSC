@@ -11,7 +11,6 @@
 class Car {
 public:
     std::vector<int> route;
-
 };
 
 

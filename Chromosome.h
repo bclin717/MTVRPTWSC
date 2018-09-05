@@ -12,7 +12,7 @@ public:
 
     std::vector<Customer> getIDs();
 
-    void calculateFitnessValue();
+    float calculateFitnessValue();
 
 
 
@@ -21,5 +21,5 @@ private:
     std::vector<Customer> _customers;
     std::vector<int> _ids;
     float _fitnewssValue;
-
+    float penalty(float TW, float lowerbound);
 };

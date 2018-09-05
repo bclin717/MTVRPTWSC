@@ -24,6 +24,9 @@ static const int CurrentBestValue = 9999999;
 static const float PriorityThresholdValue = 0.5;
 static vector<Scenario> scenarios;
 
+static const int SpeedKmHr = 40;
+static const int SpeedKmMin = 3/2;
+
 static const int NumberOfVehicle = 15;
 static const int CapacityOfVehicle = 4;
 static const int PenalizationFactor = 0.5;

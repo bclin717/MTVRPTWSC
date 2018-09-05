@@ -9,14 +9,14 @@ Chromosome::Chromosome(std::vector<Customer>& c) {
 
     _customers.assign(c.begin(), c.end());
 
-    for(int i = 1; i < _customers.size(); i++) {
-        int j = (rand() % (_customers.size()-1))+1 ;
+    for(unsigned int i = 1; i < _customers.size(); i++) {
+        int j = static_cast<int>((rand() % (_customers.size() - 1)) + 1);
         Customer temp = _customers.at(i);
         _customers.at(i) = _customers.at(j);
         _customers.at(j) = temp;
     }
 
-    //calculateFitnessValue();
+    calculateFitnessValue();
 }
 
 bool Chromosome::ifInRoute(int num, vector<int> ids) {
@@ -71,24 +71,37 @@ bool Chromosome::ifInRoute(int num, vector<int> ids) {
 //    calculateFitnessValue();
 //}
 
-void Chromosome::calculateFitnessValue() {
+float Chromosome::penalty(float TW, float lowerbound) {
+    return (TW - lowerbound) * PenalizationFactor;
+}
+
+float Chromosome::calculateFitnessValue() {
     Car car[NumberOfVehicle];
-    int COST = 0;
-    int TW = 0;
+    float COST = 0;
+    float TW = 0;
     int LOAD = 0;
     int carCount = 0;
-    for(int i = 1; i < _customers.size(); i++) {
+    for(unsigned int i = 1; i < _customers.size(); i++) {
         car[carCount].route.emplace_back(_customers.at(i).getID());
         LOAD += _customers.at(i).getDemandQuantity();
         if(LOAD > CapacityOfVehicle) {
+            COST += (distanceMatrix[_customers.at(i).getID()][0] * SpeedKmMin);
             carCount++;
             i--;
             continue;
         } else {
+            TW = COST > _customers.at(i).getTimeWindow().getLowerBound() ? COST : _customers.at(i).getTimeWindow().getLowerBound();
+
+            COST += (distanceMatrix[_customers.at(i-1).getID()][_customers.at(i).getID()] * SpeedKmMin);
+
+            if(TW > _customers.at(i).getTimeWindow().getUpperBound())
+                COST += penalty(TW, _customers.at(i).getTimeWindow().getUpperBound());
+
         }
     }
-
+    return COST;
 }
+
 
 vector<Customer> Chromosome::getIDs() {
     for(int i = 0; i < _customers.size(); i++)
