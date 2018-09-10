@@ -53,16 +53,16 @@ void algorithm4() {
 int main() {
 
     // Genrating customers
-    for (int i = 0; i < NumberOfDeterministicCustomers + 1; i++)
+    for (int i = 0; i < NumberOfDeterministicCustomers; i++)
         dCustomers.emplace_back(i);
-    for (int i = NumberOfDeterministicCustomers + 1;
-         i < NumberOfStochasticCustomers + NumberOfDeterministicCustomers + 2; i++)
+    for (int i = NumberOfDeterministicCustomers;
+         i < NumberOfStochasticCustomers + NumberOfDeterministicCustomers - 1; i++)
         sCustomers.emplace_back(i);
 
     // Generating probability of stochastic customers randomly
     srand(static_cast<unsigned int>(time(nullptr)));
     float p;
-    for (int i = 0; i < NumberOfStochasticCustomers; i++) {
+    for (int i = 0; i < NumberOfStochasticCustomers - 1; i++) {
         p = static_cast<float>((float) rand() / (RAND_MAX + 1.0));
         sCustomers.at(i).setProbability(p);
     }
@@ -70,12 +70,12 @@ int main() {
     // Classify high probability stochastic customers and low probability stochastic customers
 
     // Put deterministic customers into L1
-    for (int i = 0; i < NumberOfDeterministicCustomers + 1; i++) {
+    for (int i = 0; i < NumberOfDeterministicCustomers; i++) {
         L1.emplace_back(dCustomers.at(i));
     }
 
     // Classified by probability
-    for (int i = 0; i < NumberOfStochasticCustomers; i++) {
+    for (int i = 0; i < NumberOfStochasticCustomers - 1; i++) {
         if (sCustomers.at(i).getProbability() >= PriorityThresholdValue)
             L1.emplace_back(sCustomers.at(i));
         else
