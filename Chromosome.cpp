@@ -2,7 +2,9 @@
 // Created by kevin on 2018/9/1.
 //
 
+#include <stdlib.h>
 #include "Param.h"
+
 
 Chromosome::Chromosome(std::vector<Customer>& c) {
     _fitnewssValue = 0;
@@ -15,8 +17,9 @@ Chromosome::Chromosome(std::vector<Customer>& c) {
         _customers.at(i) = _customers.at(j);
         _customers.at(j) = temp;
     }
+    _customers.emplace_back(0);
 
-    calculateFitnessValue();
+    _fitnewssValue = calculateFitnessValue();
 }
 
 bool Chromosome::ifInRoute(int num, vector<int> ids) {
@@ -81,11 +84,22 @@ float Chromosome::calculateFitnessValue() {
     float TW = 0;
     int LOAD = 0;
     int carCount = 0;
+    int nowCustomer, preCustomer;
+    int count = 0;
     car[carCount].route.push_back(0);
     for(unsigned int i = 1; i < _customers.size(); i++) {
+        count ++;
         LOAD += _customers.at(i).getDemandQuantity();
+
+        if(_customers.at(i).getID() >= NumberOfDeterministicCustomers) nowCustomer = _customers.at(i).getID() - 15;
+        else nowCustomer = _customers.at(i).getID();
+
+        if(_customers.at(i-1).getID() >= NumberOfDeterministicCustomers) preCustomer = _customers.at(i-1).getID() - 15;
+        else preCustomer = _customers.at(i-1).getID();
+
+
         if(LOAD > CapacityOfVehicle) {
-            COST += (distanceMatrix[_customers.at(i).getID()][0] * SpeedKmMin);
+            COST += (distanceMatrix[nowCustomer][0] * SpeedKmMin);
             car[++carCount].route.push_back(0);
             i--;
             LOAD = 0;
@@ -93,10 +107,12 @@ float Chromosome::calculateFitnessValue() {
         } else {
             TW = COST > _customers.at(i).getTimeWindow().getLowerBound() ? COST : _customers.at(i).getTimeWindow().getLowerBound();
 
-            COST += (distanceMatrix[_customers.at(i-1).getID()][_customers.at(i).getID()] * SpeedKmMin);
+            COST += (distanceMatrix[preCustomer][nowCustomer] * SpeedKmMin);
 
-            if(TW > _customers.at(i).getTimeWindow().getUpperBound())
+            if(TW > _customers.at(i).getTimeWindow().getUpperBound()) {
                 COST += penalty(TW, _customers.at(i).getTimeWindow().getUpperBound());
+            }
+
 
         }
     }
