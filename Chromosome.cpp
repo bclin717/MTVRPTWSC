@@ -56,7 +56,7 @@ float Chromosome::calculateFitnessValue() {
             continue;
         } else {
             TW = COST > _customers.at(i).getTimeWindow().getLowerBound() ? COST : _customers.at(i).getTimeWindow().getLowerBound();
-            COST += (distanceMatrix[preCustomer][nowCustomer] * SpeedKmMin);
+            COST += (distanceMatrix[preCustomer][nowCustomer] * SpeedKmMin) + _customers.at(i).getServiceTime();
             if (TW > _customers.at(i).getTimeWindow().getUpperBound())
                 COST += penalty(TW, _customers.at(i).getTimeWindow().getUpperBound());
         }

@@ -25,7 +25,7 @@ void Customer::initialParams() {
     _id = -1;
     _demandQuantity = 1;
     _probability = 1;
-    _serviceTime = -1;
+    _serviceTime = serviceTime;
     _x = 0;
     _y = 0;
     _t = -1;
