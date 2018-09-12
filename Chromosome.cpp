@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include "Param.h"
 
-
+Chromosome::Chromosome() {}
 Chromosome::Chromosome(std::vector<Customer>& c) {
     _fitnewssValue = 0;
-
+    _wheelProbability = 0;
     _customers.assign(c.begin(), c.end());
 
     for(unsigned int i = 1; i < _customers.size(); i++) {
@@ -70,4 +70,16 @@ vector<Customer> Chromosome::getIDs() {
         std::cout << _customers.at(i).getID() << " ";
     cout << "Fitness Value : " << _fitnewssValue << endl;
     return _customers;
+}
+
+float Chromosome::getFitnessValue() {
+    return _fitnewssValue;
+}
+
+double Chromosome::getWheelProbability() {
+    return _wheelProbability;
+}
+
+void Chromosome::setWheelProbability(double p) {
+    _wheelProbability = p;
 }

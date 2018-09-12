@@ -23,6 +23,35 @@ Route algorithm2() {
         chromosomes.at(i).getIDs();
     }
 
+    //Roulette Wheel Selection
+    //Calculate probabilities of all Chromosome
+    double total = 0;
+    for (int i = 0; i < NumberOfChromosome; i++)
+        total += chromosomes.at(i).getFitnessValue();
+    chromosomes.at(0).setWheelProbability(chromosomes.at(0).getFitnessValue() / total);
+    for (int i = 1; i < NumberOfChromosome; i++)
+        chromosomes.at(i).setWheelProbability(
+                (chromosomes.at(i).getFitnessValue() / total) + chromosomes.at(i - 1).getWheelProbability());
+
+    //Select
+    Chromosome parent[2];
+    int id[2] = {-1, -1};
+    while (id[0] == id[1]) {
+        for (int i = 0; i < 2; i++) {
+            double p = static_cast<float>((double) rand() / (RAND_MAX + 1.0));
+            for (int i2 = 0; i2 < NumberOfChromosome - 1; i2++) {
+                if (p > chromosomes.at(i2).getWheelProbability() && p < chromosomes.at(i2 + 1).getWheelProbability()) {
+                    parent[i] = chromosomes.at(i2);
+                    id[i] = i2;
+                    break;
+                }
+            }
+        }
+    }
+
+
+
+
 
     //TODO algorithm2
 

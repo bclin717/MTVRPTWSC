@@ -8,12 +8,19 @@ class Chromosome {
 public:
     Chromosome(std::vector<Customer>& c);
 
+    Chromosome();
+
     void ClarkeAndWright();
 
     std::vector<Customer> getIDs();
 
     float calculateFitnessValue();
 
+    float getFitnessValue();
+
+    void setWheelProbability(double p);
+
+    double getWheelProbability();
 
 
 private:
@@ -22,4 +29,6 @@ private:
     std::vector<int> _ids;
     float _fitnewssValue;
     float penalty(float TW, float lowerbound);
+
+    double _wheelProbability;
 };
