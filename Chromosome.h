@@ -26,6 +26,8 @@ public:
 
     std::vector<Customer> getCustomers();
 
+    void pushCustomers(Customer c);
+
 
 private:
     bool ifInRoute(int num, std::vector<int> ids);

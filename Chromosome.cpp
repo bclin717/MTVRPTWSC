@@ -5,12 +5,16 @@
 #include <stdlib.h>
 #include "Param.h"
 
-Chromosome::Chromosome() {}
+Chromosome::Chromosome() {
+    _wheelProbability = 1;
+    _fitnewssValue = 0;
+}
 
 Chromosome::Chromosome(Chromosome c, bool b) {
+    vector<Customer> vc = c.getCustomers();
     _fitnewssValue = c.getFitnessValue();
     _wheelProbability = c.getWheelProbability();
-    _customers.assign(c.getCustomers().begin(), c.getCustomers().end());
+    _customers.assign(vc.begin(), vc.end());
 }
 
 Chromosome::Chromosome(std::vector<Customer>& c) {
@@ -68,6 +72,7 @@ float Chromosome::calculateFitnessValue() {
                 COST += penalty(TW, _customers.at(i).getTimeWindow().getUpperBound());
         }
     }
+    _fitnewssValue = COST;
     return COST;
 }
 
@@ -93,4 +98,8 @@ void Chromosome::setWheelProbability(double p) {
 
 std::vector<Customer> Chromosome::getCustomers() {
     return _customers;
+}
+
+void Chromosome::pushCustomers(Customer c) {
+    _customers.emplace_back(c);
 }

@@ -29,49 +29,67 @@ Route algorithm2() {
     for (int i = 0; i < NumberOfChromosome; i++)
         total += chromosomes.at(i).getFitnessValue();
     chromosomes.at(0).setWheelProbability(chromosomes.at(0).getFitnessValue() / total);
+    chromosomes.at(0).setWheelProbability(0);
     for (int i = 1; i < NumberOfChromosome; i++)
         chromosomes.at(i).setWheelProbability(
                 (chromosomes.at(i).getFitnessValue() / total) + chromosomes.at(i - 1).getWheelProbability());
 
     //Select
-//    Chromosome parent[2], child[2] = {Chromosome(), Chromosome()};
-//    int id[2] = {-1, -1};
-//    while (id[0] == id[1]) {
-//        for (int i = 0; i < 2; i++) {
-//            double p = static_cast<float>((double) rand() / (RAND_MAX + 1.0));
-//            for (int i2 = 0; i2 < NumberOfChromosome - 1; i2++) {
-//                if (p > chromosomes.at(i2).getWheelProbability() && p < chromosomes.at(i2 + 1).getWheelProbability()) {
-//                    parent[i] = chromosomes.at(i2);
-//                    id[i] = i2;
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//    int size = static_cast<int>(parent[0].getCustomers().size());
-//    int cutBegin = -1, cutEnd = -1;
-//    do {
-//        cutBegin = static_cast<int>(static_cast<float>( rand() % size));
-//        cutEnd = static_cast<int>(static_cast<float>( rand() % size));
-//    } while(cutBegin == cutEnd);
+    double p;
+    Chromosome parent[2] = {Chromosome(), Chromosome()}, child[2] = {Chromosome(), Chromosome()};
+    int id[2] = {-1, -1};
+    do {
+        for (int i = 0; i < 2; i++) {
+            p = static_cast<double>(rand() / (RAND_MAX + 1.0));
+            for (int i2 = 0; i2 < NumberOfChromosome; i2++) {
+                if (p > chromosomes.at(i2).getWheelProbability()) {
+                    if (i2 == NumberOfChromosome - 1) {
+                        parent[i] = Chromosome(chromosomes.at(i2), true);
+                        id[i] = i2;
+                        break;
+                    } else if (p <= chromosomes.at(i2 + 1).getWheelProbability()) {
+                        parent[i] = Chromosome(chromosomes.at(i2), true);
+                        id[i] = i2;
+                        break;
+                    }
 
-//    for(int i = 0; i < cutBegin; i++) {
-//        child[0].getCustomers().emplace_back(Customer(parent[1].getCustomers().at(i)));
-//        child[1].getCustomers().emplace_back(Customer(parent[0].getCustomers().at(i)));
-//    }
-//
-//    for(int i = cutBegin; i < cutEnd + 1; i++) {
-//        child[0].getCustomers().emplace_back(Customer(parent[0].getCustomers().at(i)));
-//        child[1].getCustomers().emplace_back(Customer(parent[1].getCustomers().at(i)));
-//    }
+                }
 
-//    for(int i = cutEnd + 1; i < size; i++) {
-//        child[0].getCustomers().emplace_back(Customer(parent[1].getCustomers().at(i)));
-//        child[1].getCustomers().emplace_back(Customer(parent[0].getCustomers().at(i)));
-//    }
+            }
+        }
+    } while (id[0] == id[1]);
 
+    int size = static_cast<int>(parent[0].getCustomers().size());
+    int cutBegin = -1, cutEnd = -1;
+    do {
+        cutBegin = rand() % size;
+        cutEnd = rand() % size;
+    } while (cutBegin == cutEnd);
 
+    for (int i = 0; i < cutBegin; i++) {
+        child[0].pushCustomers(Customer(parent[1].getCustomers().at(i)));
+        child[1].pushCustomers(Customer(parent[0].getCustomers().at(i)));
+    }
 
+    for (int i = cutBegin; i < cutEnd + 1; i++) {
+        child[0].pushCustomers(Customer(parent[0].getCustomers().at(i)));
+        child[1].pushCustomers(Customer(parent[1].getCustomers().at(i)));
+    }
+
+    for (int i = cutEnd + 1; i < size; i++) {
+        child[0].pushCustomers(Customer(parent[1].getCustomers().at(i)));
+        child[1].pushCustomers(Customer(parent[0].getCustomers().at(i)));
+    }
+
+    cout << endl;
+    parent[0].getIDs();
+    parent[1].getIDs();
+
+    cout << endl;
+    child[0].calculateFitnessValue();
+    child[0].getIDs();
+    child[1].calculateFitnessValue();
+    child[1].getIDs();
 
     //TODO algorithm2
 
