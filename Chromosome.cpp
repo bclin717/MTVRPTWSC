@@ -6,6 +6,13 @@
 #include "Param.h"
 
 Chromosome::Chromosome() {}
+
+Chromosome::Chromosome(Chromosome c, bool b) {
+    _fitnewssValue = c.getFitnessValue();
+    _wheelProbability = c.getWheelProbability();
+    _customers.assign(c.getCustomers().begin(), c.getCustomers().end());
+}
+
 Chromosome::Chromosome(std::vector<Customer>& c) {
     _fitnewssValue = 0;
     _wheelProbability = 0;
@@ -82,4 +89,8 @@ double Chromosome::getWheelProbability() {
 
 void Chromosome::setWheelProbability(double p) {
     _wheelProbability = p;
+}
+
+std::vector<Customer> Chromosome::getCustomers() {
+    return _customers;
 }

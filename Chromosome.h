@@ -8,7 +8,9 @@ class Chromosome {
 public:
     Chromosome(std::vector<Customer>& c);
 
+    Chromosome(Chromosome c, bool b);
     Chromosome();
+
 
     void ClarkeAndWright();
 
@@ -21,6 +23,8 @@ public:
     void setWheelProbability(double p);
 
     double getWheelProbability();
+
+    std::vector<Customer> getCustomers();
 
 
 private:
