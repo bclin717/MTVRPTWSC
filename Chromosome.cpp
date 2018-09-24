@@ -33,6 +33,12 @@ Chromosome::Chromosome(std::vector<Customer>& c) {
     _fitnewssValue = calculateFitnessValue();
 }
 
+void Chromosome::initialCustomers(int n) {
+    for(int i = 0; i < n; i++) {
+        _customers.emplace_back(Customer());
+    }
+}
+
 bool Chromosome::ifInRoute(int num, vector<int> ids) {
     for (int id : ids) if(num == id) return true;
     return false;
@@ -78,8 +84,8 @@ float Chromosome::calculateFitnessValue() {
 
 
 vector<Customer> Chromosome::getIDs() {
-    for(int i = 0; i < _customers.size(); i++)
-        std::cout << _customers.at(i).getID() << " ";
+    for (auto &_customer : _customers)
+        std::cout << _customer.getID() << " ";
     cout << "Fitness Value : " << _fitnewssValue << endl;
     return _customers;
 }
@@ -96,10 +102,20 @@ void Chromosome::setWheelProbability(double p) {
     _wheelProbability = p;
 }
 
-std::vector<Customer> Chromosome::getCustomers() {
+std::vector<Customer>& Chromosome::getCustomers() {
     return _customers;
+}
+
+void Chromosome::setCustomerTo(Customer c, int position) {
+    _customers.at(static_cast<unsigned long>(position)) = Customer(c);
 }
 
 void Chromosome::pushCustomers(Customer c) {
     _customers.emplace_back(c);
+}
+
+bool Chromosome::isExists(int cID) {
+    for (auto &_customer : _customers)
+        if(_customer.getID() == cID) return true;
+    return false;
 }

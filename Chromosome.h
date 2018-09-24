@@ -24,10 +24,14 @@ public:
 
     double getWheelProbability();
 
-    std::vector<Customer> getCustomers();
+    std::vector<Customer>& getCustomers();
 
     void pushCustomers(Customer c);
+    void setCustomerTo(Customer c, int position);
 
+    void initialCustomers(int n);
+
+    bool isExists(int cID);
 
 private:
     bool ifInRoute(int num, std::vector<int> ids);

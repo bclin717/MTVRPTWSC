@@ -6,15 +6,7 @@ vector<Customer> sCustomers;
 vector<Customer> L1;
 vector<Customer> L2;
 
-void algorithm1() {
-
-}
-
-void adsplit() {
-
-}
-
-Route algorithm2() {
+void algorithm2() {
     vector<Chromosome> chromosomes;
     for(int i = 0; i < NumberOfChromosome; i++)
         chromosomes.emplace_back(Chromosome(L1));
@@ -66,34 +58,35 @@ Route algorithm2() {
         cutEnd = rand() % size;
     } while (cutBegin == cutEnd);
 
-    for (int i = 0; i < cutBegin; i++) {
-        child[0].pushCustomers(Customer(parent[1].getCustomers().at(i)));
-        child[1].pushCustomers(Customer(parent[0].getCustomers().at(i)));
+    if(cutBegin > cutEnd) {
+        int temp = cutBegin;
+        cutBegin = cutEnd;
+        cutEnd = temp;
     }
 
-    for (int i = cutBegin; i < cutEnd + 1; i++) {
-        child[0].pushCustomers(Customer(parent[0].getCustomers().at(i)));
-        child[1].pushCustomers(Customer(parent[1].getCustomers().at(i)));
+    for(int i = 0; i < 2; i++) {
+        for(int i2 = cutBegin; i2 <= cutEnd; i2++) {
+            child[i].getCustomers().emplace_back(parent[i].getCustomers().at(i2));
+        }
     }
 
-    for (int i = cutEnd + 1; i < size; i++) {
-        child[0].pushCustomers(Customer(parent[1].getCustomers().at(i)));
-        child[1].pushCustomers(Customer(parent[0].getCustomers().at(i)));
+    for(int i = cutBegin; i < parent[0].getCustomers().size(); i++) {
+        if(!child[1].isExists(parent[0].getCustomers().at(i).getID()))
+            child[1].getCustomers().emplace_back(parent[0].getCustomers().at(i));
+        if(!child[0].isExists(parent[1].getCustomers().at(i).getID()))
+            child[0].getCustomers().emplace_back(parent[1].getCustomers().at(i));
     }
 
-    cout << endl;
-    parent[0].getIDs();
-    parent[1].getIDs();
+    for(int i = 0; i < cutBegin; i++) {
+        if(!child[1].isExists(parent[0].getCustomers().at(i).getID()))
+            child[1].getCustomers().insert(child[1].getCustomers().begin(), parent[0].getCustomers().at(i));
+        if(!child[0].isExists(parent[1].getCustomers().at(i).getID()))
+            child[0].getCustomers().insert(child[0].getCustomers().begin(), parent[1].getCustomers().at(i));
+    }
 
-    cout << endl;
-    child[0].calculateFitnessValue();
-    child[0].getIDs();
-    child[1].calculateFitnessValue();
-    child[1].getIDs();
 
     //TODO algorithm2
 
-    return Route();
 }
 
 Route algorithm3() {
@@ -153,7 +146,7 @@ int main() {
     sort(L2.begin(), L2.end(), Customer::cmp);
 
     // Use Hybrid Generation Algorithm to generate a route.
-    Route S = algorithm2();
+        algorithm2();
 
 
     Route S2 = algorithm3();
