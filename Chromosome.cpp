@@ -10,6 +10,10 @@ Chromosome::Chromosome() {
     _fitnewssValue = 0;
 }
 
+bool Chromosome::cmp(const Chromosome &c1, const Chromosome &c2) {
+    return c1._fitnewssValue < c2._fitnewssValue;
+}
+
 Chromosome::Chromosome(Chromosome c, bool b) {
     vector<Customer> vc = c.getCustomers();
     _fitnewssValue = c.getFitnessValue();
@@ -28,7 +32,8 @@ Chromosome::Chromosome(std::vector<Customer>& c) {
         _customers.at(i) = _customers.at(j);
         _customers.at(j) = temp;
     }
-    _customers.emplace_back(0);
+
+    _customers.at(0) = 0;
 
     _fitnewssValue = calculateFitnessValue();
 }

@@ -6,22 +6,17 @@ vector<Customer> sCustomers;
 vector<Customer> L1;
 vector<Customer> L2;
 
+vector<Chromosome> chromosomes;
+
 void algorithm2() {
-    vector<Chromosome> chromosomes;
-    for(int i = 0; i < NumberOfChromosome; i++)
-        chromosomes.emplace_back(Chromosome(L1));
-
-    for(int i = 0; i < NumberOfChromosome; i++) {
-        chromosomes.at(i).getIDs();
-    }
-
     //Roulette Wheel Selection
     //Calculate probabilities of all Chromosome
     double total = 0;
     for (int i = 0; i < NumberOfChromosome; i++)
         total += chromosomes.at(i).getFitnessValue();
-    chromosomes.at(0).setWheelProbability(chromosomes.at(0).getFitnessValue() / total);
+
     chromosomes.at(0).setWheelProbability(0);
+
     for (int i = 1; i < NumberOfChromosome; i++)
         chromosomes.at(i).setWheelProbability(
                 (chromosomes.at(i).getFitnessValue() / total) + chromosomes.at(i - 1).getWheelProbability());
@@ -29,6 +24,7 @@ void algorithm2() {
     //Select
     double p;
     Chromosome parent[2] = {Chromosome(), Chromosome()}, child[2] = {Chromosome(), Chromosome()};
+
     int id[2] = {-1, -1};
     do {
         for (int i = 0; i < 2; i++) {
@@ -51,11 +47,12 @@ void algorithm2() {
         }
     } while (id[0] == id[1]);
 
+
     int size = static_cast<int>(parent[0].getCustomers().size());
     int cutBegin = -1, cutEnd = -1;
     do {
-        cutBegin = rand() % size;
-        cutEnd = rand() % size;
+        cutBegin = (rand() % size - 1) + 1;
+        cutEnd = (rand() % size - 1) + 1;
     } while (cutBegin == cutEnd);
 
     if(cutBegin > cutEnd) {
@@ -63,9 +60,9 @@ void algorithm2() {
         cutBegin = cutEnd;
         cutEnd = temp;
     }
-
+    
     for(int i = 0; i < 2; i++) {
-        for(int i2 = cutBegin; i2 <= cutEnd; i2++) {
+        for (int i2 = cutBegin; i2 < cutEnd; i2++) {
             child[i].getCustomers().emplace_back(parent[i].getCustomers().at(i2));
         }
     }
@@ -73,20 +70,31 @@ void algorithm2() {
     for(int i = cutBegin; i < parent[0].getCustomers().size(); i++) {
         if(!child[1].isExists(parent[0].getCustomers().at(i).getID()))
             child[1].getCustomers().emplace_back(parent[0].getCustomers().at(i));
-        if(!child[0].isExists(parent[1].getCustomers().at(i).getID()))
+    }
+
+    for (int i = cutBegin; i < parent[1].getCustomers().size(); i++) {
+        if (!child[0].isExists(parent[1].getCustomers().at(i).getID()))
             child[0].getCustomers().emplace_back(parent[1].getCustomers().at(i));
     }
 
-    for(int i = 0; i < cutBegin; i++) {
+
+    for (int i = 1; i < cutBegin; i++) {
         if(!child[1].isExists(parent[0].getCustomers().at(i).getID()))
             child[1].getCustomers().insert(child[1].getCustomers().begin(), parent[0].getCustomers().at(i));
         if(!child[0].isExists(parent[1].getCustomers().at(i).getID()))
             child[0].getCustomers().insert(child[0].getCustomers().begin(), parent[1].getCustomers().at(i));
     }
 
+    for (int i = 0; i < 2; i++) {
+        child[i].getCustomers().insert(child[i].getCustomers().begin(), 0);
+        child[i].calculateFitnessValue();
+        chromosomes.push_back(Chromosome(child[i]));
+    }
 
-    //TODO algorithm2
+    sort(chromosomes.begin(), chromosomes.end(), Chromosome::cmp);
 
+    for (int i = 0; i < 2; i++)
+        chromosomes.pop_back();
 }
 
 Route algorithm3() {
@@ -111,7 +119,6 @@ void algorithm4() {
 
 
 int main() {
-
     // Genrating customers
     for (int i = 0; i < NumberOfDeterministicCustomers; i++)
         dCustomers.emplace_back(i);
@@ -145,9 +152,18 @@ int main() {
     // Sorting
     sort(L2.begin(), L2.end(), Customer::cmp);
 
+    chromosomes.clear();
+    for (int i = 0; i < NumberOfChromosome; i++)
+        chromosomes.emplace_back(Chromosome(L1));
+
     // Use Hybrid Generation Algorithm to generate a route.
+    for (int i = 0; i < 400; i++)
         algorithm2();
 
+    for (int i = 0; i < NumberOfChromosome; i++) {
+        chromosomes.at(i).getCustomers().emplace_back(0);
+        chromosomes.at(i).getIDs();
+    }
 
     Route S2 = algorithm3();
 

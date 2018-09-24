@@ -11,6 +11,7 @@ public:
     Chromosome(Chromosome c, bool b);
     Chromosome();
 
+    static bool cmp(const Chromosome &c1, const Chromosome &c2);
 
     void ClarkeAndWright();
 
