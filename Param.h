@@ -25,18 +25,19 @@ static const float PriorityThresholdValue = 0.5;
 static vector<Scenario> scenarios;
 
 static const int SpeedKmHr = 40;
-static const int SpeedKmMin = 1.5;
+static const float SpeedKmMin = 1.5;
 
 static const int NumberOfVehicle = 15;
 static const int CapacityOfVehicle = 4;
-static const int PenalizationFactor = 0.5;
-
+static const float PenalizationFactor = 0.5;
 static const int serviceTime = 10;
 
 static const int NumberOfDeterministicCustomers = 16;
 static const int NumberOfStochasticCustomers = 16;
 
 static const int NumberOfChromosome = 10;
+
+static const unsigned int NumberOfGeneration = 500;
 
 const float distanceMatrix[NumberOfDeterministicCustomers][NumberOfDeterministicCustomers] = {
         {0.00,13.96,7.06,7.92,10.94,14.37,13.30,6.99,11.87,19.36,11.13,15.04,10.79,13.86,20.95,17.88},

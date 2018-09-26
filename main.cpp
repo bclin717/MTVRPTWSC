@@ -97,26 +97,16 @@ void algorithm2() {
         chromosomes.pop_back();
 }
 
-Route algorithm3() {
+void algorithm3() {
     while (!L2.empty()) {
         Customer c = Customer(L2.at(0));
         L2.erase(L2.begin());
 
         // TODO algorithm3
-        /*algorithm3
-            ...
-            ...
-            ...
-        */
+
+        L1.emplace_back(c);
     }
-    return Route();
 }
-
-void algorithm4() {
-
-}
-
-
 
 int main() {
     // Genrating customers
@@ -143,10 +133,7 @@ int main() {
 
     // Classified by probability
     for (int i = 0; i < NumberOfStochasticCustomers - 1; i++) {
-        if (sCustomers.at(i).getProbability() >= PriorityThresholdValue)
-            L1.emplace_back(sCustomers.at(i));
-        else
-            L2.emplace_back(sCustomers.at(i));
+        L2.emplace_back(sCustomers.at(i));
     }
 
     // Sorting
@@ -157,7 +144,7 @@ int main() {
         chromosomes.emplace_back(Chromosome(L1));
 
     // Use Hybrid Generation Algorithm to generate a route.
-    for (int i = 0; i < 400; i++)
+    for (int i = 0; i < NumberOfGeneration; i++)
         algorithm2();
 
     for (int i = 0; i < NumberOfChromosome; i++) {
@@ -165,7 +152,16 @@ int main() {
         chromosomes.at(i).getIDs();
     }
 
-    Route S2 = algorithm3();
+    L1.clear();
+    L1 = vector<Customer>(chromosomes.at(0).getCustomers());
+
+    algorithm3();
+
+//    L1.emplace_back(0);
+//    for (int i = 0; i < L1.size(); i++) {
+//        cout << L1.at(i).getID() << " ";
+//    }
+
 
     return 0;
 }
