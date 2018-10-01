@@ -8,6 +8,7 @@ class Chromosome {
 public:
     Chromosome(std::vector<Customer>& c);
 
+    Chromosome(std::vector<Customer> &c, bool b);
     Chromosome(Chromosome c, bool b);
     Chromosome();
 

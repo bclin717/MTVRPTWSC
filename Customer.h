@@ -14,6 +14,8 @@ public:
 
     Customer(int id);
 
+    Customer(int id, int up, int lp);
+
     Customer(const Customer &_c);
 
     static bool cmp(const Customer &c1, const Customer &c2);
@@ -31,6 +33,8 @@ public:
     TimeWindow getTimeWindow();
     void setTimeWindow(TimeWindow tw);
 
+    TimeWindow _timeWindow;
+
 private:
     int _id;
     int _x;
@@ -39,7 +43,7 @@ private:
     int _serviceTime;
     int _t;
     float _probability;
-    TimeWindow _timeWindow;
+
 
     void initialParams();
 };

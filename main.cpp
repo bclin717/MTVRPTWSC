@@ -7,6 +7,7 @@ vector<Customer> L1;
 vector<Customer> L2;
 
 vector<Chromosome> chromosomes;
+Chromosome chromosome;
 
 void algorithm2() {
     //Roulette Wheel Selection
@@ -48,7 +49,7 @@ void algorithm2() {
     } while (id[0] == id[1]);
 
 
-    int size = static_cast<int>(parent[0].getCustomers().size());
+    int size = parent[0].getCustomers().size();
     int cutBegin = -1, cutEnd = -1;
     do {
         cutBegin = (rand() % size - 1) + 1;
@@ -98,23 +99,50 @@ void algorithm2() {
 }
 
 void algorithm3() {
+    chromosome = Chromosome(L1, true);
+
+    int minPos, minFitV;
+    bool flag = false;
     while (!L2.empty()) {
         Customer c = Customer(L2.at(0));
         L2.erase(L2.begin());
-
+        minPos = 1;
+        minFitV = 9999999;
+        flag = false;
         // TODO algorithm3
+        for (int i = 1; i < chromosome.getCustomers().size(); i++) {
+            if (flag) {
+                chromosome.getCustomers().insert(chromosome.getCustomers().begin() + i, Customer(c));
+                chromosome.calculateFitnessValue();
+                if (chromosome.getFitnessValue() <= minFitV) {
+                    minFitV = chromosome.getFitnessValue();
+                    minPos = i;
+                }
+                chromosome.getCustomers().erase(chromosome.getCustomers().begin() + i);
+            }
+            if (chromosome.getCustomers().at(i).getID() == c.getID() - NumberOfDeterministicCustomers + 1) flag = true;
 
-        L1.emplace_back(c);
+        }
+
+        chromosome.getCustomers().insert(chromosome.getCustomers().begin() + minPos, c);
+        chromosome.calculateFitnessValue();
+
+
     }
 }
 
 int main() {
     // Genrating customers
-    for (int i = 0; i < NumberOfDeterministicCustomers; i++)
-        dCustomers.emplace_back(i);
+    for (int i = 0; i < NumberOfDeterministicCustomers; i++) {
+        dCustomers.emplace_back(i, Lbound[i], Ubound[i]);
+    }
+
     for (int i = NumberOfDeterministicCustomers;
-         i < NumberOfStochasticCustomers + NumberOfDeterministicCustomers - 1; i++)
-        sCustomers.emplace_back(i);
+         i < NumberOfStochasticCustomers + NumberOfDeterministicCustomers - 1; i++) {
+        sCustomers.emplace_back(i, Lbound[i - NumberOfDeterministicCustomers],
+                                Ubound[i - NumberOfDeterministicCustomers]);
+    }
+
 
     // Generating probability of stochastic customers randomly
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -147,21 +175,19 @@ int main() {
     for (int i = 0; i < NumberOfGeneration; i++)
         algorithm2();
 
-    for (int i = 0; i < NumberOfChromosome; i++) {
-        chromosomes.at(i).getCustomers().emplace_back(0);
-        chromosomes.at(i).getIDs();
-    }
+    // Best route (only dCustomer)
+    chromosomes.at(0).getIDs();
 
+
+    // Add sCustomer then calculate best route
     L1.clear();
     L1 = vector<Customer>(chromosomes.at(0).getCustomers());
-
     algorithm3();
 
-//    L1.emplace_back(0);
-//    for (int i = 0; i < L1.size(); i++) {
-//        cout << L1.at(i).getID() << " ";
-//    }
-
+    for (int i = 0; i < chromosome.getCustomers().size(); i++) {
+        cout << chromosome.getCustomers().at(i).getID() << " ";
+    }
+    cout << "Fitness Value : " << chromosome.getFitnessValue() << endl;
 
     return 0;
 }

@@ -13,6 +13,13 @@ Customer::Customer(int id) {
     _id = id;
 }
 
+Customer::Customer(int id, int up, int lp) {
+    initialParams();
+    _id = id;
+    _timeWindow.setLowerBound(lp);
+    _timeWindow.setUpperBound(up);
+}
+
 Customer::Customer(const Customer &_c) {
     _id = _c._id;
     _demandQuantity = _c._demandQuantity;

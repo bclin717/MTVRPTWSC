@@ -29,10 +29,16 @@ static const float SpeedKmMin = 1.5;
 
 static const int NumberOfVehicle = 15;
 static const int CapacityOfVehicle = 4;
-static const float PenalizationFactor = 0.5;
-static const int serviceTime = 10;
+static const float PenalizationFactor = 0.06;
+static const int serviceTime = 8;
 
 static const int NumberOfDeterministicCustomers = 16;
+
+const unsigned int Lbound[NumberOfDeterministicCustomers] = {0, 60, 300, 300, 0, 480, 480, 480, 60, 0, 60, 0, 480, 180,
+                                                             0, 240};
+const unsigned int Ubound[NumberOfDeterministicCustomers] = {600, 120, 360, 360, 60, 540, 540, 540, 120, 60, 120, 60,
+                                                             540, 240, 60, 300};
+
 static const int NumberOfStochasticCustomers = 16;
 
 static const int NumberOfChromosome = 10;

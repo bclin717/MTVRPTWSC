@@ -38,6 +38,13 @@ Chromosome::Chromosome(std::vector<Customer>& c) {
     _fitnewssValue = calculateFitnessValue();
 }
 
+Chromosome::Chromosome(std::vector<Customer> &c, bool b) {
+    _fitnewssValue = 0;
+    _wheelProbability = 0;
+    _customers.assign(c.begin(), c.end());
+    _fitnewssValue = calculateFitnessValue();
+}
+
 void Chromosome::initialCustomers(int n) {
     for(int i = 0; i < n; i++) {
         _customers.emplace_back(Customer());
