@@ -99,8 +99,6 @@ void algorithm2() {
 }
 
 void algorithm3() {
-    chromosome = Chromosome(L1, true);
-
     int minPos, minFitV;
     bool flag = false;
     while (!L2.empty()) {
@@ -121,17 +119,15 @@ void algorithm3() {
                 chromosome.getCustomers().erase(chromosome.getCustomers().begin() + i);
             }
             if (chromosome.getCustomers().at(i).getID() == c.getID() - NumberOfDeterministicCustomers + 1) {
-                i++;
                 flag = true;
             }
         }
 
         chromosome.getCustomers().insert(chromosome.getCustomers().begin() + minPos, c);
     }
-    chromosome.getCustomers().emplace_back(chromosome.getCustomers().at(1));
+//    chromosome.getCustomers().emplace_back(chromosome.getCustomers().at(1));
     chromosome.getCustomers().erase(chromosome.getCustomers().begin()+1);
     chromosome.calculateFitnessValue();
-
 }
 
 int main() {
@@ -179,22 +175,17 @@ int main() {
         algorithm2();
 
     // Best route (only dCustomer)
-    chromosomes.at(0).getIDs();
+    chromosome = Chromosome(chromosomes.at(0));
 
 
-    // Add sCustomer then calculate best route
-    L1.clear();
-    L1 = vector<Customer>(chromosomes.at(0).getCustomers());
-    for(int i = 1; i < L1.size(); i++) {
-        if(L1.at(i).getID() == 0) L1.erase(L1.begin()+i);
+    // Check if there's an error occurs
+    for(int i = 1; i < chromosome.getCustomers().size(); i++) {
+        if(chromosome.getCustomers().at(i).getID() == 0) chromosome.getCustomers().erase(chromosome.getCustomers().begin()+i);
     }
 
+    chromosome.getIDs();
     algorithm3();
-
-    for (int i = 0; i < chromosome.getCustomers().size(); i++) {
-        cout << chromosome.getCustomers().at(i).getID() << " ";
-    }
-    cout << "Fitness Value : " << chromosome.getFitnessValue() << endl;
+    chromosome.getIDs();
 
     return 0;
 }

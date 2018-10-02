@@ -78,14 +78,14 @@ float Chromosome::calculateFitnessValue() {
         else preCustomer = _customers.at(i-1).getID();
 
         if(LOAD > CapacityOfVehicle) {
-            COST += (distanceMatrix[nowCustomer][0] * SpeedKmMin);
+            COST += costMatrix[nowCustomer][0];
             car[++carCount].route.push_back(0);
             i--;
             LOAD = 0;
             continue;
         } else {
             TW = COST > _customers.at(i).getTimeWindow().getLowerBound() ? COST : _customers.at(i).getTimeWindow().getLowerBound();
-            COST += (distanceMatrix[preCustomer][nowCustomer] * SpeedKmMin) + _customers.at(i).getServiceTime();
+            COST += costMatrix[preCustomer][nowCustomer] + _customers.at(i).getServiceTime();
             if (TW > _customers.at(i).getTimeWindow().getUpperBound())
                 COST += penalty(TW, _customers.at(i).getTimeWindow().getUpperBound());
         }
