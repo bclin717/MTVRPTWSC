@@ -120,15 +120,18 @@ void algorithm3() {
                 }
                 chromosome.getCustomers().erase(chromosome.getCustomers().begin() + i);
             }
-            if (chromosome.getCustomers().at(i).getID() == c.getID() - NumberOfDeterministicCustomers + 1) flag = true;
-
+            if (chromosome.getCustomers().at(i).getID() == c.getID() - NumberOfDeterministicCustomers + 1) {
+                i++;
+                flag = true;
+            }
         }
 
         chromosome.getCustomers().insert(chromosome.getCustomers().begin() + minPos, c);
-        chromosome.calculateFitnessValue();
-
-
     }
+    chromosome.getCustomers().emplace_back(chromosome.getCustomers().at(1));
+    chromosome.getCustomers().erase(chromosome.getCustomers().begin()+1);
+    chromosome.calculateFitnessValue();
+
 }
 
 int main() {
@@ -182,6 +185,10 @@ int main() {
     // Add sCustomer then calculate best route
     L1.clear();
     L1 = vector<Customer>(chromosomes.at(0).getCustomers());
+    for(int i = 1; i < L1.size(); i++) {
+        if(L1.at(i).getID() == 0) L1.erase(L1.begin()+i);
+    }
+
     algorithm3();
 
     for (int i = 0; i < chromosome.getCustomers().size(); i++) {
