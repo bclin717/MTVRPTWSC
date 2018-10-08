@@ -57,7 +57,7 @@ bool Chromosome::ifInRoute(int num, vector<int> ids) {
 }
 
 float Chromosome::penalty(float TW, float lowerbound) {
-    return (TW - lowerbound) * PenalizationFactor;
+    return (TW - lowerbound) / PenalizationFactor;
 }
 
 float Chromosome::calculateFitnessValue() {

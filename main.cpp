@@ -177,15 +177,16 @@ int main() {
     // Best route (only dCustomer)
     chromosome = Chromosome(chromosomes.at(0));
 
-
     // Check if there's an error occurs
     for(int i = 1; i < chromosome.getCustomers().size(); i++) {
-        if(chromosome.getCustomers().at(i).getID() == 0) chromosome.getCustomers().erase(chromosome.getCustomers().begin()+i);
+        if (chromosome.getCustomers().at(i).getID() == 0)
+            chromosome.getCustomers().erase(chromosome.getCustomers().begin() + i);
     }
 
     chromosome.getIDs();
     algorithm3();
     chromosome.getIDs();
+
 
     return 0;
 }
