@@ -22,14 +22,13 @@ using namespace std;
 
 static const int CurrentBestValue = 9999999;
 static const float PriorityThresholdValue = 0.5;
-static vector<Scenario> scenarios;
 
 static const int SpeedKmHr = 40;
 static const float SpeedKmMin = 1.5;
 
 static const int NumberOfVehicle = 15;
 static const int CapacityOfVehicle = 4;
-static const float PenalizationFactor = 8;
+static const float PenalizationFactor = 10;
 static const int serviceTime = 8;
 
 static const int NumberOfDeterministicCustomers = 16;
@@ -82,5 +81,13 @@ const float costMatrix[NumberOfDeterministicCustomers][NumberOfDeterministicCust
         {6.51,2.23,4.93,1.41,4.82,4.84,2.40,4.34,3.58,1.44,3.27,1.92,4.15,2.66,99999.00,1.05},
         {5.56,1.22,4.16,1.38,4.28,4.53,1.42,3.39,2.53,1.74,2.23,0.89,3.56,1.61,1.05,99999.00}
 };
+
+const int NumberOfScenarios = 4;
+static Scenario scenarios[NumberOfScenarios];
+const float scenarioProbabilities[] = {0.5, 0.2, 0.2, 0.1};
+const int scenarioStochasticCustomerIDs[4][4] = {{2, -1, -1, -1},
+                                                 {3, 4, 5, -1},
+                                                 {2, 5, 14, -1},
+                                                 {5, 6, 7, 11}};
 
 #endif //MTVRPTWSC_PARAM_H
