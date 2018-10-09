@@ -187,6 +187,24 @@ int main() {
     algorithm3();
     chromosome.getIDs();
 
+    //scenario
+    Scenario s[4];
+    const float scenarioProbabilities[] = {0.5, 0.2, 0.2, 0.1};
+    const int scenarioStochasticCustomerIDs[4][4] = {{2, -1, -1, -1},
+                                                     {3, 4, 5, -1},
+                                                     {2, 5, 14, -1},
+                                                     {5, 6, 7, 11}};
+    for (int i = 0; i < 4; i++) s[i].setProbabilityOfOccurrence(scenarioProbabilities[i]);
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (scenarioStochasticCustomerIDs[i][j] == -1) continue;
+            s[i]._stochasticCustomerIDs.emplace_back(scenarioStochasticCustomerIDs[i][j]);
+        }
+    }
+
+
+
+
 
     return 0;
 }

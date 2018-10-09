@@ -4,10 +4,6 @@
 
 #include "Scenario.h"
 
-std::vector<int> Scenario::getStochasticCustomerIDs() {
-    return _stochasticCustomerIDs;
-}
-
 float Scenario::getProbabilityOfOccurrence() {
     return _probabilityOfOccurrence;
 }

@@ -9,14 +9,13 @@
 
 class Scenario {
 public:
-    std::vector<int> getStochasticCustomerIDs();
-
     float getProbabilityOfOccurrence();
 
     void setProbabilityOfOccurrence(float p);
 
-private:
     std::vector<int> _stochasticCustomerIDs;
+private:
+
     float _probabilityOfOccurrence;
 };
 

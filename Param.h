@@ -83,5 +83,4 @@ const float costMatrix[NumberOfDeterministicCustomers][NumberOfDeterministicCust
         {5.56,1.22,4.16,1.38,4.28,4.53,1.42,3.39,2.53,1.74,2.23,0.89,3.56,1.61,1.05,99999.00}
 };
 
-
 #endif //MTVRPTWSC_PARAM_H
