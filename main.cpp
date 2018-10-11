@@ -140,24 +140,6 @@ bool isExist(int id, vector<int> IDs) {
     return flag;
 }
 
-float allScenarioCost(Chromosome c) {
-    float sum = 0;
-    for(int i = 0; i < NumberOfScenarios; i++) {
-        Chromosome ctemp(c);
-        for(int j = 0; j < ctemp.getCustomers().size(); j++) {
-            if(ctemp.getCustomers().at(j).getID() >= NumberOfDeterministicCustomers && !isExist(ctemp.getCustomers().at(j).getID(), scenarios[i]._stochasticCustomerIDs)) {
-                ctemp.getCustomers().erase(ctemp.getCustomers().begin()+j);
-                ctemp.calculateFitnessValue();
-                ctemp.getIDs();
-            }
-        }
-        ctemp.calculateFitnessValue();
-        sum += ctemp.getFitnessValue() * scenarios[i].getProbabilityOfOccurrence();
-        cout << endl;
-    }
-    return sum;
-}
-
 int main() {
     // Generating customers
     for (int i = 0; i < NumberOfDeterministicCustomers; i++) {
@@ -214,19 +196,6 @@ int main() {
     chromosome.getIDs();
     algorithm3();
     chromosome.getIDs();
-
-    //scenario
-
-    for (int i = 0; i < 4; i++) scenarios[i].setProbabilityOfOccurrence(scenarioProbabilities[i]);
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (scenarioStochasticCustomerIDs[i][j] == -1) continue;
-            scenarios[i]._stochasticCustomerIDs.emplace_back(scenarioStochasticCustomerIDs[i][j]);
-        }
-    }
-
-    float sum = allScenarioCost(chromosome);
-    cout << sum << endl;
 
 
 
