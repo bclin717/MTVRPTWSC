@@ -23,7 +23,6 @@ public:
     float getFitnessValue();
 
     void setWheelProbability(double p);
-
     double getWheelProbability();
 
     std::vector<Customer>& getCustomers();

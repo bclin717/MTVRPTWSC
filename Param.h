@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <vector>
-#include <ctime>
+#include <time.h>
 #include <algorithm>
 
 #include "Route.h"

@@ -48,54 +48,58 @@ void algorithm2() {
         }
     } while (id[0] == id[1]);
 
+    for (int i = 0; i < NumberOfGeneration; i++) {
 
-    int size = parent[0].getCustomers().size();
-    int cutBegin = -1, cutEnd = -1;
-    do {
-        cutBegin = (rand() % size - 1) + 1;
-        cutEnd = (rand() % size - 1) + 1;
-    } while (cutBegin == cutEnd);
+        int size = parent[0].getCustomers().size();
+        int cutBegin = -1, cutEnd = -1;
+        do {
+            cutBegin = (rand() % size - 1) + 1;
+            cutEnd = (rand() % size - 1) + 1;
+        } while (cutBegin == cutEnd);
 
-    if(cutBegin > cutEnd) {
-        int temp = cutBegin;
-        cutBegin = cutEnd;
-        cutEnd = temp;
-    }
-    
-    for(int i = 0; i < 2; i++) {
-        for (int i2 = cutBegin; i2 < cutEnd; i2++) {
-            child[i].getCustomers().emplace_back(parent[i].getCustomers().at(i2));
+        if (cutBegin > cutEnd) {
+            int temp = cutBegin;
+            cutBegin = cutEnd;
+            cutEnd = temp;
         }
+
+        for (int i = 0; i < 2; i++) {
+            for (int i2 = cutBegin; i2 < cutEnd; i2++) {
+                child[i].getCustomers().emplace_back(parent[i].getCustomers().at(i2));
+            }
+        }
+
+        for (int i = cutBegin; i < parent[0].getCustomers().size(); i++) {
+            if (!child[1].isExists(parent[0].getCustomers().at(i).getID()))
+                child[1].getCustomers().emplace_back(parent[0].getCustomers().at(i));
+        }
+
+        for (int i = cutBegin; i < parent[1].getCustomers().size(); i++) {
+            if (!child[0].isExists(parent[1].getCustomers().at(i).getID()))
+                child[0].getCustomers().emplace_back(parent[1].getCustomers().at(i));
+        }
+
+
+        for (int i = 1; i < cutBegin; i++) {
+            if (!child[1].isExists(parent[0].getCustomers().at(i).getID()))
+                child[1].getCustomers().insert(child[1].getCustomers().begin(), parent[0].getCustomers().at(i));
+            if (!child[0].isExists(parent[1].getCustomers().at(i).getID()))
+                child[0].getCustomers().insert(child[0].getCustomers().begin(), parent[1].getCustomers().at(i));
+        }
+
+        for (int i = 0; i < 2; i++) {
+            child[i].getCustomers().insert(child[i].getCustomers().begin(), 0);
+            child[i].calculateFitnessValue();
+            parent[i] = Chromosome(child[i]);
+            child[i].getCustomers().clear();
+            //chromosomes.push_back(Chromosome(child[i]));
+        }
+//        sort(chromosomes.begin(), chromosomes.end(), Chromosome::cmp);
+//
+//        for (int i = 0; i < 2; i++)
+//            chromosomes.pop_back();
     }
 
-    for(int i = cutBegin; i < parent[0].getCustomers().size(); i++) {
-        if(!child[1].isExists(parent[0].getCustomers().at(i).getID()))
-            child[1].getCustomers().emplace_back(parent[0].getCustomers().at(i));
-    }
-
-    for (int i = cutBegin; i < parent[1].getCustomers().size(); i++) {
-        if (!child[0].isExists(parent[1].getCustomers().at(i).getID()))
-            child[0].getCustomers().emplace_back(parent[1].getCustomers().at(i));
-    }
-
-
-    for (int i = 1; i < cutBegin; i++) {
-        if(!child[1].isExists(parent[0].getCustomers().at(i).getID()))
-            child[1].getCustomers().insert(child[1].getCustomers().begin(), parent[0].getCustomers().at(i));
-        if(!child[0].isExists(parent[1].getCustomers().at(i).getID()))
-            child[0].getCustomers().insert(child[0].getCustomers().begin(), parent[1].getCustomers().at(i));
-    }
-
-    for (int i = 0; i < 2; i++) {
-        child[i].getCustomers().insert(child[i].getCustomers().begin(), 0);
-        child[i].calculateFitnessValue();
-        chromosomes.push_back(Chromosome(child[i]));
-    }
-
-    sort(chromosomes.begin(), chromosomes.end(), Chromosome::cmp);
-
-    for (int i = 0; i < 2; i++)
-        chromosomes.pop_back();
 }
 
 void algorithm3() {
@@ -141,6 +145,7 @@ bool isExist(int id, vector<int> IDs) {
 }
 
 int main() {
+    srand(time(NULL));
     // Generating customers
     for (int i = 0; i < NumberOfDeterministicCustomers; i++) {
         dCustomers.emplace_back(i, Lbound[i], Ubound[i]);
@@ -181,8 +186,7 @@ int main() {
         chromosomes.emplace_back(Chromosome(L1));
 
     // Use Hybrid Generation Algorithm to generate a route.
-    for (int i = 0; i < NumberOfGeneration; i++)
-        algorithm2();
+    algorithm2();
 
     // Best route (only dCustomer)
     chromosome = Chromosome(chromosomes.at(0));
