@@ -91,14 +91,15 @@ void algorithm2() {
             child[i].getCustomers().insert(child[i].getCustomers().begin(), 0);
             child[i].calculateFitnessValue();
             parent[i] = Chromosome(child[i]);
+            chromosomes.emplace_back(Chromosome(child[i]));
             child[i].getCustomers().clear();
-            //chromosomes.push_back(Chromosome(child[i]));
         }
-//        sort(chromosomes.begin(), chromosomes.end(), Chromosome::cmp);
-//
-//        for (int i = 0; i < 2; i++)
-//            chromosomes.pop_back();
+        sort(chromosomes.begin(), chromosomes.end(), Chromosome::cmp);
+        for (int i = 0; i < 2; i++)
+            chromosomes.pop_back();
+
     }
+
 
 }
 
