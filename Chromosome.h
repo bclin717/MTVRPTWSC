@@ -6,15 +6,13 @@
 
 class Chromosome {
 public:
-    Chromosome(std::vector<Customer>& c);
+    Chromosome(std::vector<Customer> &c, int nod);
 
-    Chromosome(std::vector<Customer> &c, bool b);
-    Chromosome(Chromosome c, bool b);
+    Chromosome(Chromosome c, bool b, int nod);
     Chromosome();
 
     static bool cmp(const Chromosome &c1, const Chromosome &c2);
 
-    void ClarkeAndWright();
 
     std::vector<Customer> getIDs();
 
@@ -30,6 +28,8 @@ public:
     void pushCustomers(Customer c);
     void setCustomerTo(Customer c, int position);
 
+    void setNOD(int nod);
+
     void initialCustomers(int n);
 
     bool isExists(int cID);
@@ -40,6 +40,8 @@ private:
     std::vector<int> _ids;
     float _fitnewssValue;
     float penalty(float TW, float lowerbound);
+
+    int NumberOfDeterministicCustomers;
 
     double _wheelProbability;
 };

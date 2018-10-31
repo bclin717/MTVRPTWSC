@@ -14,14 +14,15 @@ bool Chromosome::cmp(const Chromosome &c1, const Chromosome &c2) {
     return c1._fitnewssValue < c2._fitnewssValue;
 }
 
-Chromosome::Chromosome(Chromosome c, bool b) {
+Chromosome::Chromosome(Chromosome c, bool b, int nod) {
     vector<Customer> vc = c.getCustomers();
     _fitnewssValue = c.getFitnessValue();
     _wheelProbability = c.getWheelProbability();
     _customers.assign(vc.begin(), vc.end());
+    this->NumberOfDeterministicCustomers = nod;
 }
 
-Chromosome::Chromosome(std::vector<Customer>& c) {
+Chromosome::Chromosome(std::vector<Customer> &c, int nod) {
     _fitnewssValue = 0;
     _wheelProbability = 0;
     _customers.assign(c.begin(), c.end());
@@ -34,14 +35,7 @@ Chromosome::Chromosome(std::vector<Customer>& c) {
     }
 
     _customers.at(0) = 0;
-
-    _fitnewssValue = calculateFitnessValue();
-}
-
-Chromosome::Chromosome(std::vector<Customer> &c, bool b) {
-    _fitnewssValue = 0;
-    _wheelProbability = 0;
-    _customers.assign(c.begin(), c.end());
+    this->NumberOfDeterministicCustomers = nod;
     _fitnewssValue = calculateFitnessValue();
 }
 
@@ -68,18 +62,23 @@ float Chromosome::calculateFitnessValue() {
     int carCount = 0;
     int nowCustomer, preCustomer;
     car[carCount].route.push_back(0);
+
     for(unsigned int i = 1; i < _customers.size(); i++) {
         LOAD += _customers.at(i).getDemandQuantity();
 
-        if(_customers.at(i).getID() >= NumberOfDeterministicCustomers) nowCustomer = _customers.at(i).getID() - 15;
+        if (_customers.at(i).getID() >= NumberOfDeterministicCustomers) nowCustomer = _customers.at(i).getID() -
+                                                                                      NumberOfDeterministicCustomers +
+                                                                                      1;
         else nowCustomer = _customers.at(i).getID();
 
-        if(_customers.at(i-1).getID() >= NumberOfDeterministicCustomers) preCustomer = _customers.at(i-1).getID() - 15;
+        if (_customers.at(i - 1).getID() >= NumberOfDeterministicCustomers) preCustomer = _customers.at(i - 1).getID() -
+                                                                                          NumberOfDeterministicCustomers +
+                                                                                          1;
         else preCustomer = _customers.at(i-1).getID();
 
         if(LOAD > CapacityOfVehicle) {
             COST += costMatrix[nowCustomer][0];
-            car[++carCount].route.push_back(0);
+            car[++carCount].route.emplace_back(0);
             i--;
             LOAD = 0;
             continue;
@@ -112,6 +111,10 @@ double Chromosome::getWheelProbability() {
 
 void Chromosome::setWheelProbability(double p) {
     _wheelProbability = p;
+}
+
+void Chromosome::setNOD(int nod) {
+    this->NumberOfDeterministicCustomers = nod;
 }
 
 std::vector<Customer>& Chromosome::getCustomers() {

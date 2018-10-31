@@ -13,7 +13,7 @@ Customer::Customer(int id) {
     _id = id;
 }
 
-Customer::Customer(int id, int up, int lp) {
+Customer::Customer(int id, int lp, int up) {
     initialParams();
     _id = id;
     _timeWindow.setLowerBound(lp);
@@ -33,8 +33,6 @@ void Customer::initialParams() {
     _demandQuantity = 1;
     _probability = 1;
     _serviceTime = serviceTime;
-    _x = 0;
-    _y = 0;
     _t = -1;
     _timeWindow = TimeWindow();
 }

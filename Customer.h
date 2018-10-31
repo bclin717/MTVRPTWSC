@@ -14,7 +14,7 @@ public:
 
     Customer(int id);
 
-    Customer(int id, int up, int lp);
+    Customer(int id, int lp, int up);
 
     Customer(const Customer &_c);
 
@@ -37,8 +37,6 @@ public:
 
 private:
     int _id;
-    int _x;
-    int _y;
     int _demandQuantity;
     int _serviceTime;
     int _t;
