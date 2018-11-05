@@ -28,3 +28,6 @@ void Route::setOverhead(int overhead) {
     _overhead = overhead;
 }
 
+void Route::addNode(int n) {
+    _customerIDs.emplace_back(n);
+}

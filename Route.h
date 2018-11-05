@@ -21,8 +21,11 @@ public:
 
     void setOverhead(int overhead);
 
-private:
+    void addNode(int n);
     std::vector<int> _customerIDs;
+
+private:
+
     std::vector<int> _time;
     int _overhead;
 };

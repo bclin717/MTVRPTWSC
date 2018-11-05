@@ -9,6 +9,9 @@ vector<Customer> L2;
 vector<Chromosome> chromosomes;
 Chromosome solution;
 
+vector<Car> cars;
+vector<Route> routes;
+
 extern std::vector<int> Lbound = vector<int>(0); // ai.txt
 extern std::vector<int> Ubound = vector<int>(0); // bi.txt
 extern std::vector<int> Lbound2 = vector<int>(0); // ai2.txt
@@ -120,7 +123,6 @@ void algorithm3() {
         minPos = 1;
         minFitV = 9999999;
         flag = false;
-        // TODO algorithm3
         for (int i = 1; i < solution.getCustomers().size(); i++) {
             if (flag) {
                 solution.getCustomers().insert(solution.getCustomers().begin() + i, Customer(c));
@@ -281,6 +283,54 @@ void init() {
     sort(L2.begin(), L2.end(), Customer::cmp);
 }
 
+void runCars() {
+    for(int i = 0; i < NumberOfVehicle2; i++) {
+        cars.emplace_back(Car(timeMatrix, Lbound, Ubound, Lbound2, Ubound2));
+    }
+    int nowCar = 0;
+
+    routes.emplace_back(Route());
+    routes[0].addNode(0);
+    for(int i = 1; i < solution.getCustomers().size(); i++) {
+        routes[0].addNode(solution.getCustomers()[i].getID());
+        if(solution.getCustomers()[i].getID() == 0) {
+            routes.insert(routes.begin(), Route());
+            routes[0].addNode(0);
+        }
+    }
+    routes.erase(routes.begin());
+
+    while(!routes.empty()) {
+        cars[nowCar].setRoute(routes.at(routes.size()-1));
+        routes.pop_back();
+
+        cars[nowCar].run();
+        cout << "Car " << nowCar+1 << " ";
+        cars[nowCar].print();
+        cars[nowCar].clearRoute();
+
+        for(int i = routes.size()-1; i >= 0; i--) {
+            int temp = routes[i]._customerIDs.at(0) >= NumberOfDeterministicCustomers ? Ubound2[routes[i]._customerIDs.at(0)-NumberOfDeterministicCustomers+1] : Ubound[routes[i]._customerIDs.at(0)];
+            if(cars[nowCar].startTime < temp) {
+                break;
+            } else {
+                if (nowCar < NumberOfVehicle2 - 1) {
+                    nowCar++;
+                    break;
+                }
+                else {
+                    nowCar = 0;
+                    continue;
+                }
+
+            }
+        }
+    }
+
+
+
+}
+
 int main() {
     readFiles();
     init();
@@ -315,38 +365,8 @@ int main() {
 
     solution.getIDs();
 
-    vector<int> times;
-    int time = 0;
-    int car = 0;
-    int counter = 0;
-    for (int i = 1; i < solution.getCustomers().size(); i++) {
-        int prePoint = solution.getCustomers()[i - 1].getID() >= NumberOfDeterministicCustomers ?
-                       solution.getCustomers()[i - 1].getID() - NumberOfDeterministicCustomers + 1 : solution.getCustomers()[i - 1].getID();
-        int nowPoint = solution.getCustomers()[i].getID() >= NumberOfDeterministicCustomers ?
-                       solution.getCustomers()[i].getID() - NumberOfDeterministicCustomers + 1 : solution.getCustomers()[i].getID();
-        counter++;
+    runCars();
 
-
-        time += timeMatrix[prePoint][nowPoint];
-        if (time < solution.getCustomers()[i].getTimeWindow().getLowerBound())
-            time = solution.getCustomers()[i].getTimeWindow().getLowerBound();
-        time += serviceTime;
-        times.emplace_back(time);
-
-        if (solution.getCustomers()[i].getID() == 0) {
-
-            if (time > solution.getCustomers()[i].getTimeWindow().getLowerBound())
-                car++;
-            if (car > NumberOfVehicle2) car = 1;
-
-            cout << "Car " << car << " Route : ";
-            for (int j = i - counter; j < i; j++) {
-                cout << solution.getCustomers()[j].getID() << " ( " << times[j] << " ) ";
-            }
-            cout << "0  Time: " << time << endl;
-            counter = 0;
-        }
-    }
 
 
     cout << endl;

@@ -55,13 +55,13 @@ float Chromosome::penalty(float TW, float lowerbound) {
 }
 
 float Chromosome::calculateFitnessValue() {
-    Car car[NumberOfVehicle];
+    vector<int> car[NumberOfVehicle];
     float COST = 0;
     float TW = 0;
     int LOAD = 0;
     int carCount = 0;
     int nowCustomer, preCustomer;
-    car[carCount].route.push_back(0);
+    car[carCount].push_back(0);
 
     for (unsigned int i = 1; i < _customers.size(); i++) {
         LOAD += _customers.at(i).getDemandQuantity();
@@ -78,7 +78,7 @@ float Chromosome::calculateFitnessValue() {
 
         if (LOAD > CapacityOfVehicle) {
             COST += costMatrix[nowCustomer][0];
-            car[++carCount].route.emplace_back(0);
+            car[++carCount].emplace_back(0);
             i--;
             LOAD = 0;
             continue;
