@@ -7,13 +7,14 @@ vector<Customer> L1;
 vector<Customer> L2;
 
 vector<Chromosome> chromosomes;
-Chromosome chromosome;
+Chromosome solution;
 
 extern std::vector<int> Lbound = vector<int>(0); // ai.txt
 extern std::vector<int> Ubound = vector<int>(0); // bi.txt
 extern std::vector<int> Lbound2 = vector<int>(0); // ai2.txt
 extern std::vector<int> Ubound2 = vector<int>(0); // bi2.txt
 extern std::vector<std::vector<float>> costMatrix = vector<vector<float>>(0); // travel cost matrix.txt
+extern std::vector<std::vector<float>> timeMatrix = vector<vector<float>>(0); // travel time matrix.txt
 
 void algorithm2() {
     //Roulette Wheel Selection
@@ -97,10 +98,10 @@ void algorithm2() {
             child[0].getCustomers().insert(child[0].getCustomers().begin(), parent[1].getCustomers().at(i));
     }
 
-    for (int i = 0; i < 2; i++) {
-        child[i].getCustomers().insert(child[i].getCustomers().begin(), 0);
-        child[i].calculateFitnessValue();
-        chromosomes.push_back(Chromosome(child[i]));
+    for (auto &i : child) {
+        i.getCustomers().insert(i.getCustomers().begin(), 0);
+        i.calculateFitnessValue();
+        chromosomes.emplace_back(i);
     }
 
     sort(chromosomes.begin(), chromosomes.end(), Chromosome::cmp);
@@ -112,7 +113,7 @@ void algorithm2() {
 void algorithm3() {
     int minPos, minFitV;
     bool flag = false;
-    chromosome.setNOD(NumberOfDeterministicCustomers);
+    solution.setNOD(NumberOfDeterministicCustomers);
     while (!L2.empty()) {
         Customer c = Customer(L2.at(0));
         L2.erase(L2.begin());
@@ -120,32 +121,32 @@ void algorithm3() {
         minFitV = 9999999;
         flag = false;
         // TODO algorithm3
-        for (int i = 1; i < chromosome.getCustomers().size(); i++) {
+        for (int i = 1; i < solution.getCustomers().size(); i++) {
             if (flag) {
-                chromosome.getCustomers().insert(chromosome.getCustomers().begin() + i, Customer(c));
-                chromosome.calculateFitnessValue();
-                if (chromosome.getFitnessValue() <= minFitV) {
-                    minFitV = chromosome.getFitnessValue();
+                solution.getCustomers().insert(solution.getCustomers().begin() + i, Customer(c));
+                solution.calculateFitnessValue();
+                if (solution.getFitnessValue() <= minFitV) {
+                    minFitV = solution.getFitnessValue();
                     minPos = i;
                 }
-                chromosome.getCustomers().erase(chromosome.getCustomers().begin() + i);
+                solution.getCustomers().erase(solution.getCustomers().begin() + i);
             }
-            if (chromosome.getCustomers().at(i).getID() == c.getID() - NumberOfDeterministicCustomers + 1) {
+            if (solution.getCustomers().at(i).getID() == c.getID() - NumberOfDeterministicCustomers + 1) {
                 flag = true;
             }
         }
 
-        chromosome.getCustomers().insert(chromosome.getCustomers().begin() + minPos, c);
+        solution.getCustomers().insert(solution.getCustomers().begin() + minPos, c);
     }
 //    chromosome.getCustomers().emplace_back(chromosome.getCustomers().at(1));
-    chromosome.getCustomers().erase(chromosome.getCustomers().begin() + 1);
-    chromosome.calculateFitnessValue();
+    solution.getCustomers().erase(solution.getCustomers().begin() + 1);
+    solution.calculateFitnessValue();
 }
 
 bool isExist(int id, vector<int> IDs) {
     bool flag = false;
-    for (int i = 0; i < IDs.size(); i++) {
-        if (IDs.at(i) == id) {
+    for (int ID : IDs) {
+        if (ID == id) {
             return flag;
         }
     }
@@ -159,7 +160,7 @@ void readFiles() {
 
     //Read ai.txt
     FILE *ai;
-    if ((ai = fopen("ai.txt", "r")) == NULL) {
+    if ((ai = fopen("ai.txt", "r")) == nullptr) {
         cout << "ai.txt does not exist!!" << endl;
         exit(1);
     }
@@ -170,7 +171,7 @@ void readFiles() {
 
     //Read bi.txt
     FILE *bi;
-    if ((bi = fopen("bi.txt", "r")) == NULL) {
+    if ((bi = fopen("bi.txt", "r")) == nullptr) {
         cout << "bi.txt does not exist!!" << endl;
         exit(1);
     }
@@ -181,7 +182,7 @@ void readFiles() {
 
     //Read ai2.txt
     FILE *ai2;
-    if ((ai2 = fopen("ai2.txt", "r")) == NULL) {
+    if ((ai2 = fopen("ai2.txt", "r")) == nullptr) {
         cout << "ai2.txt does not exist!!" << endl;
         exit(1);
     }
@@ -192,7 +193,7 @@ void readFiles() {
 
     //Read bi2.txt
     FILE *bi2;
-    if ((bi2 = fopen("bi2.txt", "r")) == NULL) {
+    if ((bi2 = fopen("bi2.txt", "r")) == nullptr) {
         cout << "bi2.txt does not exist!!" << endl;
         exit(1);
     }
@@ -204,7 +205,7 @@ void readFiles() {
 
     //Read travel cost matrix.txt
     FILE *tcm;
-    if ((tcm = fopen("travel cost matrix.txt", "r")) == NULL) {
+    if ((tcm = fopen("travel cost matrix.txt", "r")) == nullptr) {
         cout << "travel cost matrix.txt does not exist!!" << endl;
         exit(1);
     }
@@ -220,6 +221,24 @@ void readFiles() {
     }
     fclose(tcm);
 
+
+    //Read travel time matrix.txt
+    FILE *ttm;
+    if ((ttm = fopen("travel time matrix.txt", "r")) == nullptr) {
+        cout << "travel time matrix.txt does not exist!!" << endl;
+        exit(1);
+    }
+    timeMatrix.emplace_back(vector<float>());
+    for (int i = 0; fscanf(ttm, "%f%c", &finput, &c) != EOF;) {
+        if (c == '\n') {
+            timeMatrix.at(i).emplace_back(finput);
+            timeMatrix.emplace_back(vector<float>());
+            i++;
+            continue;
+        }
+        timeMatrix.at(i).emplace_back(finput);
+    }
+    fclose(ttm);
 }
 
 void init() {
@@ -275,18 +294,63 @@ int main() {
         algorithm2();
 
     // Best route (only dCustomer)
-    chromosome = Chromosome(chromosomes.at(0));
+    solution = Chromosome(chromosomes.at(0));
 
     // Check if there's an error occurs
-    for (int i = 1; i < chromosome.getCustomers().size(); i++) {
-        if (chromosome.getCustomers().at(i).getID() == 0)
-            chromosome.getCustomers().erase(chromosome.getCustomers().begin() + i);
+    for (int i = 1; i < solution.getCustomers().size(); i++) {
+        if (solution.getCustomers().at(i).getID() == 0)
+            solution.getCustomers().erase(solution.getCustomers().begin() + i);
     }
 
-    chromosome.getIDs();
+    solution.getIDs();
     algorithm3();
-    chromosome.getIDs();
 
 
+    solution.getCustomers().emplace_back(0);
+    for (int i = 1; i < solution.getCustomers().size(); i++) {
+        if (i % (CapacityOfVehicle + 1) == 0) {
+            solution.getCustomers().insert(solution.getCustomers().begin() + i, 0);
+        }
+    }
+
+    solution.getIDs();
+
+    int time = 0;
+    int car = 0;
+    int counter = 0;
+    for (int i = 1; i < solution.getCustomers().size(); i++) {
+        int prePoint = solution.getCustomers()[i - 1].getID() >= NumberOfDeterministicCustomers ?
+                       solution.getCustomers()[i - 1].getID() - NumberOfDeterministicCustomers + 1
+                                                                                                : solution.getCustomers()[
+                               i - 1].getID();
+        int nowPoint = solution.getCustomers()[i].getID() >= NumberOfDeterministicCustomers ?
+                       solution.getCustomers()[i].getID() - NumberOfDeterministicCustomers + 1
+                                                                                            : solution.getCustomers()[i].getID();
+        counter++;
+
+
+        time += timeMatrix[prePoint][nowPoint];
+        if (time < solution.getCustomers()[i].getTimeWindow().getLowerBound())
+            time = solution.getCustomers()[i].getTimeWindow().getLowerBound();
+        time += serviceTime;
+
+
+        if (solution.getCustomers()[i].getID() == 0) {
+
+            if (time > solution.getCustomers()[i].getTimeWindow().getLowerBound())
+                car++;
+            if (car > NumberOfVehicle2) car = 1;
+
+            cout << "Car " << car << " Route : ";
+            for (int j = i - counter; j < i; j++) {
+                cout << solution.getCustomers()[j].getID() << " ";
+            }
+            cout << " Time: " << time << endl;
+            counter = 0;
+        }
+    }
+
+
+    cout << endl;
     return 0;
 }
