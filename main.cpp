@@ -315,17 +315,15 @@ int main() {
 
     solution.getIDs();
 
+    vector<int> times;
     int time = 0;
     int car = 0;
     int counter = 0;
     for (int i = 1; i < solution.getCustomers().size(); i++) {
         int prePoint = solution.getCustomers()[i - 1].getID() >= NumberOfDeterministicCustomers ?
-                       solution.getCustomers()[i - 1].getID() - NumberOfDeterministicCustomers + 1
-                                                                                                : solution.getCustomers()[
-                               i - 1].getID();
+                       solution.getCustomers()[i - 1].getID() - NumberOfDeterministicCustomers + 1 : solution.getCustomers()[i - 1].getID();
         int nowPoint = solution.getCustomers()[i].getID() >= NumberOfDeterministicCustomers ?
-                       solution.getCustomers()[i].getID() - NumberOfDeterministicCustomers + 1
-                                                                                            : solution.getCustomers()[i].getID();
+                       solution.getCustomers()[i].getID() - NumberOfDeterministicCustomers + 1 : solution.getCustomers()[i].getID();
         counter++;
 
 
@@ -333,7 +331,7 @@ int main() {
         if (time < solution.getCustomers()[i].getTimeWindow().getLowerBound())
             time = solution.getCustomers()[i].getTimeWindow().getLowerBound();
         time += serviceTime;
-
+        times.emplace_back(time);
 
         if (solution.getCustomers()[i].getID() == 0) {
 
@@ -343,9 +341,9 @@ int main() {
 
             cout << "Car " << car << " Route : ";
             for (int j = i - counter; j < i; j++) {
-                cout << solution.getCustomers()[j].getID() << " ";
+                cout << solution.getCustomers()[j].getID() << " ( " << times[j] << " ) ";
             }
-            cout << " Time: " << time << endl;
+            cout << "0  Time: " << time << endl;
             counter = 0;
         }
     }
