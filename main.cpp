@@ -18,6 +18,8 @@ extern std::vector<int> Lbound2 = vector<int>(0); // ai2.txt
 extern std::vector<int> Ubound2 = vector<int>(0); // bi2.txt
 extern std::vector<std::vector<float>> costMatrix = vector<vector<float>>(0); // travel cost matrix.txt
 extern std::vector<std::vector<float>> timeMatrix = vector<vector<float>>(0); // travel time matrix.txt
+extern std::vector<Scenario> scenarios = vector<Scenario>(); // travel time matrix.txt
+
 
 void algorithm2() {
     //Roulette Wheel Selection
@@ -46,13 +48,15 @@ void algorithm2() {
         for (int i = 0; i < 2; i++) {
             p = static_cast<double>(rand() / (RAND_MAX + 1.0));
             for (int i2 = 0; i2 < NumberOfChromosome; i2++) {
-                if (p > chromosomes.at(i2).getWheelProbability()) {
+                if (p > chromosomes.at(static_cast<unsigned int>(i2)).getWheelProbability()) {
                     if (i2 == NumberOfChromosome - 1) {
-                        parent[i] = Chromosome(chromosomes.at(i2), true, NumberOfDeterministicCustomers);
+                        parent[i] = Chromosome(chromosomes.at(static_cast<unsigned int>(i2)), true,
+                                               NumberOfDeterministicCustomers);
                         id[i] = i2;
                         break;
-                    } else if (p <= chromosomes.at(i2 + 1).getWheelProbability()) {
-                        parent[i] = Chromosome(chromosomes.at(i2), true, NumberOfDeterministicCustomers);
+                    } else if (p <= chromosomes.at(static_cast<unsigned int>(i2 + 1)).getWheelProbability()) {
+                        parent[i] = Chromosome(chromosomes.at(static_cast<unsigned int>(i2)), true,
+                                               NumberOfDeterministicCustomers);
                         id[i] = i2;
                         break;
                     }
@@ -93,7 +97,6 @@ void algorithm2() {
             child[0].getCustomers().emplace_back(parent[1].getCustomers().at(i));
     }
 
-
     for (int i = 1; i < cutBegin; i++) {
         if (!child[1].isExists(parent[0].getCustomers().at(i).getID()))
             child[1].getCustomers().insert(child[1].getCustomers().begin(), parent[0].getCustomers().at(i));
@@ -128,13 +131,14 @@ void algorithm3() {
                 solution.getCustomers().insert(solution.getCustomers().begin() + i, Customer(c));
                 solution.calculateFitnessValue();
                 if (solution.getFitnessValue() <= minFitV) {
-                    minFitV = solution.getFitnessValue();
+                    minFitV = static_cast<int>(solution.getFitnessValue());
                     minPos = i;
                 }
                 solution.getCustomers().erase(solution.getCustomers().begin() + i);
             }
             if (solution.getCustomers().at(i).getID() == c.getID() - NumberOfDeterministicCustomers + 1) {
                 flag = true;
+                i++;
             }
         }
 
@@ -231,6 +235,26 @@ void readFiles() {
         timeMatrix.at(i).emplace_back(finput);
     }
     fclose(ttm);
+
+    //Read scenario.txt
+    FILE *scenario;
+    if ((scenario = fopen("scenario.txt", "r")) == nullptr) {
+        cout << "scenario.txt does not exist!!" << endl;
+        exit(1);
+    }
+
+    while (fscanf(scenario, "%d%c", &input, &c) != EOF) {
+        Scenario s;
+        s.ids.emplace_back(input);
+        while (c != '\n') {
+            fscanf(scenario, "%d%c", &input, &c) != EOF;
+            s.ids.emplace_back(input);
+        }
+        fscanf(scenario, "%f%c", &finput, &c);
+        s.setProbabilityOfOccurrence(finput);
+        scenarios.emplace_back(s);
+    }
+
 }
 
 void init() {
@@ -290,7 +314,7 @@ void runCars() {
     }
     routes.pop_back();
 
-    for (int i = 0; i < routes.size(); i++) {
+    for (auto &route : routes) {
         for (int j = 0; j <= cars.size(); j++) {
             if (j == cars.size()) {
                 int min = 99999, minCar = 0;
@@ -301,7 +325,7 @@ void runCars() {
                     }
                 }
 
-                cars[minCar].setRoute(routes[i]);
+                cars[minCar].setRoute(route);
                 cars[minCar].run();
                 cout << "Car " << minCar + 1 << " : ";
                 cars[minCar].print();
@@ -310,14 +334,14 @@ void runCars() {
             }
 
             int ltime;
-            if (routes[i]._customerIDs[1] >= NumberOfDeterministicCustomers) {
-                ltime = Lbound2[routes[i]._customerIDs[1] - NumberOfDeterministicCustomers];
+            if (route._customerIDs[1] >= NumberOfDeterministicCustomers) {
+                ltime = Lbound2[route._customerIDs[1] - NumberOfDeterministicCustomers];
             } else {
-                ltime = Lbound[routes[i]._customerIDs[1] - 1];
+                ltime = Lbound[route._customerIDs[1] - 1];
             }
 
             if (cars[j].startTime < ltime) {
-                cars[j].setRoute(routes[i]);
+                cars[j].setRoute(route);
                 cars[j].run();
                 cout << "Car " << j + 1 << " : ";
                 cars[j].print();
@@ -328,6 +352,61 @@ void runCars() {
     }
 
 
+}
+
+void calScenarioValue() {
+    //remove 0 from solution
+    for (int i = 1; i < solution.getCustomers().size() - 1; i++)
+        if (solution.getCustomers()[i].getID() == 0)
+            solution.getCustomers().erase(solution.getCustomers().begin() + i);
+
+    float total = 0;
+    Chromosome temp;
+    cout << scenarios.size() << endl;
+    for (auto &scenario : scenarios) {
+        temp = Chromosome(solution, true, NumberOfDeterministicCustomers);
+        for (int j = 0; j < temp.getCustomers().size(); j++) {
+            bool flag = false;
+            if (temp.getCustomers()[j].getID() >= NumberOfDeterministicCustomers) {
+                for (int id : scenario.ids) {
+                    if (temp.getCustomers()[j].getID() != (id + NumberOfDeterministicCustomers - 1)) {
+                        flag = false;
+                        continue;
+                    } else {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    temp.getCustomers().erase(temp.getCustomers().begin() + j);
+                    j--;
+
+                }
+            }
+        }
+
+        for (int i = 1; i < temp.getCustomers().size(); i++) {
+            int pre = temp.getCustomers()[i - 1].getID();
+            int next = temp.getCustomers()[i].getID();
+
+            if (pre >= NumberOfDeterministicCustomers) pre = pre - NumberOfDeterministicCustomers + 1;
+            if (next >= NumberOfDeterministicCustomers) next = next - NumberOfDeterministicCustomers + 1;
+            if (pre == next) {
+                temp.getCustomers().erase(temp.getCustomers().begin() + i);
+                i--;
+            }
+        }
+        cout << temp.calculateFitnessValue() << endl;
+        total += temp.getFitnessValue() * scenario.getProbabilityOfOccurrence();
+
+        for (auto &j : temp.getCustomers()) {
+            cout << j.getID() << " ";
+        }
+        cout << endl;
+
+    }
+
+    cout << "Total : " << total << endl;
 }
 
 int main() {
@@ -365,9 +444,7 @@ int main() {
     solution.getIDs();
 
     runCars();
+    calScenarioValue();
 
-
-
-    cout << endl;
     return 0;
 }

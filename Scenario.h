@@ -13,7 +13,7 @@ public:
 
     void setProbabilityOfOccurrence(float p);
 
-    std::vector<int> _stochasticCustomerIDs;
+    std::vector<int> ids;
 private:
 
     float _probabilityOfOccurrence;

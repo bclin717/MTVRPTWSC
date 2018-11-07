@@ -77,7 +77,10 @@ float Chromosome::calculateFitnessValue() {
         else preCustomer = _customers.at(i - 1).getID();
 
         if (LOAD > CapacityOfVehicle) {
-            COST += costMatrix[nowCustomer][0];
+            if (nowCustomer != 0) {
+                COST += costMatrix[nowCustomer][0];
+            }
+            if (carCount >= NumberOfVehicle) carCount = 0;
             car[++carCount].emplace_back(0);
             i--;
             LOAD = 0;
@@ -93,7 +96,6 @@ float Chromosome::calculateFitnessValue() {
     _fitnewssValue = COST;
     return COST;
 }
-
 
 vector<Customer> Chromosome::getIDs() {
     for (auto &_customer : _customers)
