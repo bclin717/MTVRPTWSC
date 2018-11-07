@@ -362,7 +362,6 @@ void calScenarioValue() {
 
     float total = 0;
     Chromosome temp;
-    cout << scenarios.size() << endl;
     for (auto &scenario : scenarios) {
         temp = Chromosome(solution, true, NumberOfDeterministicCustomers);
         for (int j = 0; j < temp.getCustomers().size(); j++) {
@@ -396,7 +395,8 @@ void calScenarioValue() {
                 i--;
             }
         }
-        cout << temp.calculateFitnessValue() << endl;
+
+        temp.calculateFitnessValue();
         total += temp.getFitnessValue() * scenario.getProbabilityOfOccurrence();
 
         for (auto &j : temp.getCustomers()) {
@@ -430,10 +430,7 @@ int main() {
             solution.getCustomers().erase(solution.getCustomers().begin() + i);
     }
 
-    solution.getIDs();
     algorithm3();
-
-
     solution.getCustomers().emplace_back(0);
     for (int i = 1; i < solution.getCustomers().size(); i++) {
         if (i % (CapacityOfVehicle + 1) == 0) {
