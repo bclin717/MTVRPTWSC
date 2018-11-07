@@ -17,17 +17,16 @@ public:
 
     std::vector<int> getTime();
 
-    int getOverhead();
+    void setID(int id);
 
-    void setOverhead(int overhead);
+    int getID();
 
     void addNode(int n);
     std::vector<int> _customerIDs;
 
 private:
-
+    int _id;
     std::vector<int> _time;
-    int _overhead;
 };
 
 

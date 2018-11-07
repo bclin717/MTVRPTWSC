@@ -9,7 +9,6 @@ Route::Route() {}
 Route::Route(const Route &r) {
     _customerIDs = r._customerIDs;
     _time = r._time;
-    _overhead = r._overhead;
 }
 
 vector<int> Route::getCustomerIDs() {
@@ -20,12 +19,12 @@ vector<int> Route::getTime() {
     return _time;
 }
 
-int Route::getOverhead() {
-    return _overhead;
+int Route::getID() {
+    return _id;
 }
 
-void Route::setOverhead(int overhead) {
-    _overhead = overhead;
+void Route::setID(int id) {
+    _id = id;
 }
 
 void Route::addNode(int n) {
