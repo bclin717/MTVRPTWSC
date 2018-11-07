@@ -12,6 +12,7 @@ Car::Car(std::vector<std::vector<float>> t, std::vector<int> l, std::vector<int>
     setUbound2(u2);
     setUbound(u);
     NumberOfDeterministicCustomers = Lbound.size() + 1;
+    route.clear();
     startTime = 0;
 }
 void Car::addNode(int node) {
@@ -28,7 +29,6 @@ void Car::run() {
     for(int i = 1; i < route.size(); i++) {
         int nowPoint = route[i] >= NumberOfDeterministicCustomers ? route[i]-NumberOfDeterministicCustomers+1 : route[i];
         int prePoint = route[i-1] >= NumberOfDeterministicCustomers ? route[i-1]-NumberOfDeterministicCustomers+1 : route[i-1];
-
 
         startTime += timeMatrix[prePoint][nowPoint];
 

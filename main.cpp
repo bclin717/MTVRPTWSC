@@ -145,16 +145,6 @@ void algorithm3() {
     solution.calculateFitnessValue();
 }
 
-bool isExist(int id, vector<int> IDs) {
-    bool flag = false;
-    for (int ID : IDs) {
-        if (ID == id) {
-            return flag;
-        }
-    }
-    return flag;
-}
-
 void readFiles() {
     float finput;
     int input;
@@ -292,41 +282,50 @@ void runCars() {
     routes.emplace_back(Route());
     routes[0].addNode(0);
     for(int i = 1; i < solution.getCustomers().size(); i++) {
-        routes[0].addNode(solution.getCustomers()[i].getID());
+        routes[routes.size() - 1].addNode(solution.getCustomers()[i].getID());
         if(solution.getCustomers()[i].getID() == 0) {
-            routes.insert(routes.begin(), Route());
-            routes[0].addNode(0);
+            routes.emplace_back(Route());
+            routes[routes.size() - 1].addNode(0);
         }
     }
-    routes.erase(routes.begin());
+    routes.pop_back();
 
-    while(!routes.empty()) {
-        cars[nowCar].setRoute(routes.at(routes.size()-1));
-        routes.pop_back();
+    for (int i = 0; i < routes.size(); i++) {
+        for (int j = 0; j <= cars.size(); j++) {
+            if (j == cars.size()) {
+                int min = 99999, minCar = 0;
+                for (int k = 0; k < cars.size(); k++) {
+                    if (min > cars[k].startTime) {
+                        min = cars[k].startTime;
+                        minCar = k;
+                    }
+                }
 
-        cars[nowCar].run();
-        cout << "Car " << nowCar+1 << " ";
-        cars[nowCar].print();
-        cars[nowCar].clearRoute();
-
-        for(int i = routes.size()-1; i >= 0; i--) {
-            int temp = routes[i]._customerIDs.at(0) >= NumberOfDeterministicCustomers ? Ubound2[routes[i]._customerIDs.at(0)-NumberOfDeterministicCustomers+1] : Ubound[routes[i]._customerIDs.at(0)];
-            if(cars[nowCar].startTime < temp) {
+                cars[minCar].setRoute(routes[i]);
+                cars[minCar].run();
+                cout << "Car " << minCar + 1 << " : ";
+                cars[minCar].print();
+                cars[minCar].clearRoute();
                 break;
-            } else {
-                if (nowCar < NumberOfVehicle2 - 1) {
-                    nowCar++;
-                    break;
-                }
-                else {
-                    nowCar = 0;
-                    continue;
-                }
+            }
 
+            int ltime;
+            if (routes[i]._customerIDs[1] >= NumberOfDeterministicCustomers) {
+                ltime = Lbound2[routes[i]._customerIDs[1] - NumberOfDeterministicCustomers];
+            } else {
+                ltime = Lbound[routes[i]._customerIDs[1] - 1];
+            }
+
+            if (cars[j].startTime < ltime) {
+                cars[j].setRoute(routes[i]);
+                cars[j].run();
+                cout << "Car " << j + 1 << " : ";
+                cars[j].print();
+                cars[j].clearRoute();
+                break;
             }
         }
     }
-
 
 
 }
