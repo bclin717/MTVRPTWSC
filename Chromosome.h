@@ -25,19 +25,12 @@ public:
 
     std::vector<Customer>& getCustomers();
 
-    void pushCustomers(Customer c);
-    void setCustomerTo(Customer c, int position);
-
     void setNOD(int nod);
-
-    void initialCustomers(int n);
 
     bool isExists(int cID);
 
 private:
-    bool ifInRoute(int num, std::vector<int> ids);
     std::vector<Customer> _customers;
-    std::vector<int> _ids;
     float _fitnewssValue;
     float penalty(float TW, float lowerbound);
 

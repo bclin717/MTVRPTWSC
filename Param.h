@@ -7,20 +7,23 @@
 
 #include <iostream>
 #include <vector>
-#include <time.h>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
+#include <random>
+#include <unistd.h>
+#include <thread>
+#include <assert.h>
+#include <chrono>
 
 #include "Route.h"
 #include "Customer.h"
 #include "TimeWindow.h"
 #include "Car.h"
 #include "Scenario.h"
-#include "Link.h"
 #include "Chromosome.h"
 
 using namespace std;
-static const int CurrentBestValue = 9999999;
-static const float PriorityThresholdValue = 0.5;
 
 static const int NumberOfVehicle = 15;
 static const int NumberOfVehicle2 = 3;
@@ -33,7 +36,7 @@ static int NumberOfStochasticCustomers = 0;
 
 static const int NumberOfChromosome = 20;
 
-static const unsigned int NumberOfGeneration = 500;
+static const unsigned int NumberOfGeneration = 50;
 
 extern std::vector<int> Lbound; // ai.txt
 extern std::vector<int> Ubound; // bi.txt

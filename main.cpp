@@ -1,5 +1,6 @@
 #include "Param.h"
 
+
 vector<Customer> dCustomers;
 vector<Customer> sCustomers;
 
@@ -20,19 +21,23 @@ extern std::vector<std::vector<float>> costMatrix = vector<vector<float>>(0); //
 extern std::vector<std::vector<float>> timeMatrix = vector<vector<float>>(0); // travel time matrix.txt
 extern std::vector<Scenario> scenarios = vector<Scenario>(); // travel time matrix.txt
 
+auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+mt19937 generator{seed};
+uniform_real_distribution<float> unif(0.0, 1.0);
+
 
 void algorithm2() {
     //Roulette Wheel Selection
     //Calculate probabilities of all Chromosome
     double total = 0;
-    for (int i = 0; i < NumberOfChromosome; i++)
+    for (unsigned int i = 0; i < NumberOfChromosome; i++)
         total += chromosomes.at(i).getFitnessValue();
 
     chromosomes.at(0).setWheelProbability(0);
 
-    for (int i = 1; i < NumberOfChromosome; i++)
+    for (unsigned int i = 1; i < NumberOfChromosome; i++)
         chromosomes.at(i).setWheelProbability(
-                (chromosomes.at(i).getFitnessValue() / total) + chromosomes.at(i - 1).getWheelProbability());
+                (chromosomes.at(i).getFitnessValue() / total) + chromosomes.at(i).getWheelProbability());
 
     //Select
     double p;
@@ -44,35 +49,32 @@ void algorithm2() {
     }
 
     int id[2] = {-1, -1};
-    do {
-        for (int i = 0; i < 2; i++) {
-            p = static_cast<double>(rand() / (RAND_MAX + 1.0));
-            for (int i2 = 0; i2 < NumberOfChromosome; i2++) {
-                if (p > chromosomes.at(static_cast<unsigned int>(i2)).getWheelProbability()) {
-                    if (i2 == NumberOfChromosome - 1) {
-                        parent[i] = Chromosome(chromosomes.at(static_cast<unsigned int>(i2)), true,
-                                               NumberOfDeterministicCustomers);
-                        id[i] = i2;
-                        break;
-                    } else if (p <= chromosomes.at(static_cast<unsigned int>(i2 + 1)).getWheelProbability()) {
-                        parent[i] = Chromosome(chromosomes.at(static_cast<unsigned int>(i2)), true,
-                                               NumberOfDeterministicCustomers);
-                        id[i] = i2;
-                        break;
-                    }
-
-                }
-
+    for (int i = 0; i < 2; i++) {
+        p = unif(generator);
+        for (int i2 = 0; i2 < NumberOfChromosome; i2++) {
+            if (p > chromosomes.at(static_cast<unsigned int>(i2)).getWheelProbability()) {
+                parent[i] = Chromosome(chromosomes.at(static_cast<unsigned int>(i2)), true,
+                                       NumberOfDeterministicCustomers);
+                id[i] = i2;
+                break;
             }
         }
-    } while (id[0] == id[1]);
 
+        if (parent[i].getCustomers().size() <= 1) {
+            parent[i] = Chromosome(chromosomes.at(static_cast<unsigned int>(0)), true,
+                                   NumberOfDeterministicCustomers);
+            id[i] = 0;
+        }
+    }
+
+    assert(parent[0].getCustomers().size() == parent[1].getCustomers().size());
 
     int size = parent[0].getCustomers().size();
+    uniform_real_distribution<float> unif_int(1, size - 1);
     int cutBegin = -1, cutEnd = -1;
     do {
-        cutBegin = (rand() % size - 1) + 1;
-        cutEnd = (rand() % size - 1) + 1;
+        cutBegin = (int) unif_int(generator);
+        cutEnd = (int) unif_int(generator);
     } while (cutBegin == cutEnd);
 
     if (cutBegin > cutEnd) {
@@ -274,10 +276,9 @@ void init() {
     }
 
     // Generating probability of stochastic customers randomly
-    srand(static_cast<unsigned int>(time(nullptr)));
     float p;
     for (int i = 0; i < NumberOfStochasticCustomers - 1; i++) {
-        p = static_cast<float>((float) rand() / (RAND_MAX + 1.0));
+        p = unif(generator);
         sCustomers.at(i).setProbability(p);
     }
 
@@ -418,8 +419,9 @@ int main() {
         chromosomes.emplace_back(Chromosome(L1, NumberOfDeterministicCustomers));
 
     // Use Hybrid Generation Algorithm to generate a route.
-    for (int i = 0; i < NumberOfGeneration; i++)
+    for (int i = 0; i < NumberOfGeneration; i++) {
         algorithm2();
+    }
 
     // Best route (only dCustomer)
     solution = Chromosome(chromosomes.at(0));

@@ -23,31 +23,24 @@ Chromosome::Chromosome(Chromosome c, bool b, int nod) {
 }
 
 Chromosome::Chromosome(std::vector<Customer> &c, int nod) {
+    auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+    mt19937 generator{seed};
+
     _fitnewssValue = 0;
     _wheelProbability = 0;
     _customers.assign(c.begin(), c.end());
 
+    uniform_real_distribution<float> unif(1, _customers.size() - 1);
     for (unsigned int i = 1; i < _customers.size(); i++) {
-        int j = static_cast<int>((rand() % (_customers.size() - 1)) + 1);
+        int j = static_cast<int>(unif(generator));
+        usleep(1);
         Customer temp = _customers.at(i);
         _customers.at(i) = _customers.at(j);
         _customers.at(j) = temp;
     }
-
     _customers.at(0) = 0;
     this->NumberOfDeterministicCustomers = nod;
     _fitnewssValue = calculateFitnessValue();
-}
-
-void Chromosome::initialCustomers(int n) {
-    for (int i = 0; i < n; i++) {
-        _customers.emplace_back(Customer());
-    }
-}
-
-bool Chromosome::ifInRoute(int num, vector<int> ids) {
-    for (int id : ids) if (num == id) return true;
-    return false;
 }
 
 float Chromosome::penalty(float TW, float lowerbound) {
@@ -122,14 +115,6 @@ void Chromosome::setNOD(int nod) {
 
 std::vector<Customer> &Chromosome::getCustomers() {
     return _customers;
-}
-
-void Chromosome::setCustomerTo(Customer c, int position) {
-    _customers.at(static_cast<unsigned long>(position)) = Customer(c);
-}
-
-void Chromosome::pushCustomers(Customer c) {
-    _customers.emplace_back(c);
 }
 
 bool Chromosome::isExists(int cID) {
