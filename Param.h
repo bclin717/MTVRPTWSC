@@ -27,7 +27,7 @@ using namespace std;
 
 static const int NumberOfVehicle = 15;
 static const int NumberOfVehicle2 = 3;
-static const int CapacityOfVehicle = 3;
+static const int CapacityOfVehicle = 4;
 static const float PenalizationFactor = 100;
 static const int serviceTime = 8;
 
@@ -38,13 +38,12 @@ static const int NumberOfChromosome = 20;
 
 static const unsigned int NumberOfGeneration = 50;
 
-extern std::vector<int> Lbound; // ai.txt
-extern std::vector<int> Ubound; // bi.txt
-extern std::vector<int> Lbound2; // ai2.txt
-extern std::vector<int> Ubound2; // bi2.txt
-extern std::vector<std::vector<int>> distanceMatrix; // distance matrix.txt
+static std::vector<int> Lbound; // ai.txt
+static std::vector<int> Ubound; // bi.txt
+static std::vector<int> Lbound2; // ai2.txt
+static std::vector<int> Ubound2; // bi2.txt
 extern std::vector<std::vector<float>> costMatrix; // travel cost matrix.txt
 extern std::vector<std::vector<float>> timeMatrix; // travel time matrix.txt
-extern std::vector<Scenario> scenarios; // travel time matrix.txt
+static std::vector<Scenario> scenarios; // travel time matrix.txt
 
 #endif //MTVRPTWSC_PARAM_H

@@ -1,47 +1,48 @@
 #include "Param.h"
 
+static vector<Customer> dCustomers;
+static vector<Customer> sCustomers;
 
-vector<Customer> dCustomers;
-vector<Customer> sCustomers;
+static vector<Customer> L1;
+static vector<Customer> L2;
 
-vector<Customer> L1;
-vector<Customer> L2;
+static vector<Chromosome> *chromosomes = new vector<Chromosome>;
+static Chromosome solution;
 
-vector<Chromosome> chromosomes;
-Chromosome solution;
+static vector<Car> cars;
+static vector<Route> routes;
 
-vector<Car> cars;
-vector<Route> routes;
-
-extern std::vector<int> Lbound = vector<int>(0); // ai.txt
-extern std::vector<int> Ubound = vector<int>(0); // bi.txt
-extern std::vector<int> Lbound2 = vector<int>(0); // ai2.txt
-extern std::vector<int> Ubound2 = vector<int>(0); // bi2.txt
 extern std::vector<std::vector<float>> costMatrix = vector<vector<float>>(0); // travel cost matrix.txt
 extern std::vector<std::vector<float>> timeMatrix = vector<vector<float>>(0); // travel time matrix.txt
-extern std::vector<Scenario> scenarios = vector<Scenario>(); // travel time matrix.txt
 
-auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-mt19937 generator{seed};
-uniform_real_distribution<float> unif(0.0, 1.0);
-
+static auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+static mt19937 generator{seed};
+static uniform_real_distribution<float> unif(0.0, 1.0);
 
 void algorithm2() {
     //Roulette Wheel Selection
     //Calculate probabilities of all Chromosome
-    double total = 0;
-    for (unsigned int i = 0; i < NumberOfChromosome; i++)
-        total += chromosomes.at(i).getFitnessValue();
+    static double total = 0;
+    static int i;
+    for (i = 0; i < NumberOfChromosome; i++)
+        total += chromosomes->at(i).getFitnessValue();
 
-    chromosomes.at(0).setWheelProbability(0);
+    chromosomes->at(0).setWheelProbability(0);
 
-    for (unsigned int i = 1; i < NumberOfChromosome; i++)
-        chromosomes.at(i).setWheelProbability(
-                (chromosomes.at(i).getFitnessValue() / total) + chromosomes.at(i).getWheelProbability());
+    for (i = 1; i < NumberOfChromosome; i++)
+        chromosomes->at(i).setWheelProbability(
+                (chromosomes->at(i).getFitnessValue() / total) + chromosomes->at(i).getWheelProbability());
 
     //Select
     double p;
-    Chromosome parent[2] = {Chromosome(), Chromosome()}, child[2] = {Chromosome(), Chromosome()};
+    static Chromosome *parent = new Chromosome[2];
+    parent[0] = Chromosome();
+    parent[1] = Chromosome();
+
+    static Chromosome *child = new Chromosome[2];
+    child[0] = Chromosome();
+    child[1] = Chromosome();
+
 
     for (int i = 0; i < 2; i++) {
         parent[i].setNOD(NumberOfDeterministicCustomers);
@@ -49,11 +50,11 @@ void algorithm2() {
     }
 
     int id[2] = {-1, -1};
-    for (int i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         p = unif(generator);
         for (int i2 = 0; i2 < NumberOfChromosome; i2++) {
-            if (p > chromosomes.at(static_cast<unsigned int>(i2)).getWheelProbability()) {
-                parent[i] = Chromosome(chromosomes.at(static_cast<unsigned int>(i2)), true,
+            if (p > chromosomes->at(static_cast<unsigned int>(i2)).getWheelProbability()) {
+                parent[i] = Chromosome(chromosomes->at(static_cast<unsigned int>(i2)), true,
                                        NumberOfDeterministicCustomers);
                 id[i] = i2;
                 break;
@@ -61,7 +62,7 @@ void algorithm2() {
         }
 
         if (parent[i].getCustomers().size() <= 1) {
-            parent[i] = Chromosome(chromosomes.at(static_cast<unsigned int>(0)), true,
+            parent[i] = Chromosome(chromosomes->at(static_cast<unsigned int>(0)), true,
                                    NumberOfDeterministicCustomers);
             id[i] = 0;
         }
@@ -69,53 +70,36 @@ void algorithm2() {
 
     assert(parent[0].getCustomers().size() == parent[1].getCustomers().size());
 
-    int size = parent[0].getCustomers().size();
+    static int size = parent[0].getCustomers().size();
     uniform_real_distribution<float> unif_int(1, size - 1);
-    int cutBegin = -1, cutEnd = -1;
-    do {
-        cutBegin = (int) unif_int(generator);
-        cutEnd = (int) unif_int(generator);
-    } while (cutBegin == cutEnd);
+    static int cutBegin = 0, cutEnd = -1;
+    cutEnd = (int) unif_int(generator);
 
-    if (cutBegin > cutEnd) {
-        int temp = cutBegin;
-        cutBegin = cutEnd;
-        cutEnd = temp;
-    }
-
-    for (int i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         for (int i2 = cutBegin; i2 < cutEnd; i2++) {
             child[i].getCustomers().emplace_back(parent[i].getCustomers().at(i2));
         }
     }
 
-    for (int i = cutBegin; i < parent[0].getCustomers().size(); i++) {
+    for (i = cutEnd; i < parent[0].getCustomers().size(); i++) {
         if (!child[1].isExists(parent[0].getCustomers().at(i).getID()))
             child[1].getCustomers().emplace_back(parent[0].getCustomers().at(i));
     }
 
-    for (int i = cutBegin; i < parent[1].getCustomers().size(); i++) {
+    for (i = cutEnd; i < parent[1].getCustomers().size(); i++) {
         if (!child[0].isExists(parent[1].getCustomers().at(i).getID()))
             child[0].getCustomers().emplace_back(parent[1].getCustomers().at(i));
     }
 
-    for (int i = 1; i < cutBegin; i++) {
-        if (!child[1].isExists(parent[0].getCustomers().at(i).getID()))
-            child[1].getCustomers().insert(child[1].getCustomers().begin(), parent[0].getCustomers().at(i));
-        if (!child[0].isExists(parent[1].getCustomers().at(i).getID()))
-            child[0].getCustomers().insert(child[0].getCustomers().begin(), parent[1].getCustomers().at(i));
+    for (i = 0; i < 2; i++) {
+        child[i].calculateFitnessValue();
+        chromosomes->emplace_back(child[i]);
     }
 
-    for (auto &i : child) {
-        i.getCustomers().insert(i.getCustomers().begin(), 0);
-        i.calculateFitnessValue();
-        chromosomes.emplace_back(i);
-    }
-
-    sort(chromosomes.begin(), chromosomes.end(), Chromosome::cmp);
+    sort(chromosomes->begin(), chromosomes->end(), Chromosome::cmp);
 
     for (int i = 0; i < 2; i++)
-        chromosomes.pop_back();
+        chromosomes->pop_back();
 }
 
 void algorithm3() {
@@ -263,6 +247,17 @@ void init() {
     NumberOfDeterministicCustomers = Lbound.size() + 1;
     NumberOfStochasticCustomers = NumberOfDeterministicCustomers;
 
+    L1.reserve(NumberOfDeterministicCustomers);
+    L2.reserve(NumberOfDeterministicCustomers);
+
+    costMatrix.reserve(NumberOfDeterministicCustomers + 2);
+    timeMatrix.reserve(NumberOfDeterministicCustomers + 2);
+
+    for (int i = 0; i < NumberOfDeterministicCustomers + 2; i++) {
+        costMatrix[i].reserve(NumberOfDeterministicCustomers + 2);
+        timeMatrix[i].reserve(NumberOfDeterministicCustomers + 2);
+    }
+
     // Generating customers
     dCustomers.emplace_back(0, 0, 720);
     for (int i = 0; i < NumberOfDeterministicCustomers; i++) {
@@ -288,14 +283,6 @@ void init() {
     for (int i = 0; i < NumberOfDeterministicCustomers; i++) {
         L1.emplace_back(dCustomers.at(i));
     }
-
-    // Classified by probability
-    for (int i = 0; i < NumberOfStochasticCustomers - 1; i++) {
-        L2.emplace_back(sCustomers.at(i));
-    }
-
-    // Sorting
-    sort(L2.begin(), L2.end(), Customer::cmp);
 }
 
 void runCars() {
@@ -414,36 +401,54 @@ int main() {
     readFiles();
     init();
 
-    chromosomes.clear();
-    for (int i = 0; i < NumberOfChromosome; i++)
-        chromosomes.emplace_back(Chromosome(L1, NumberOfDeterministicCustomers));
+    //Release Memory
+    L2.clear();
+    L2.shrink_to_fit();
+    dCustomers.clear();
+    dCustomers.shrink_to_fit();
+    sCustomers.clear();
+    sCustomers.shrink_to_fit();
+    chromosomes->clear();
+    chromosomes->shrink_to_fit();
 
+
+    for (int i = 0; i < NumberOfChromosome; i++) {
+        chromosomes->emplace_back(Chromosome(L1, NumberOfDeterministicCustomers));
+    }
+    L1.clear();
+    L1.shrink_to_fit();
+
+    cout << "F" << endl;
     // Use Hybrid Generation Algorithm to generate a route.
     for (int i = 0; i < NumberOfGeneration; i++) {
+        cout << i << endl;
         algorithm2();
     }
-
-    // Best route (only dCustomer)
-    solution = Chromosome(chromosomes.at(0));
-
-    // Check if there's an error occurs
-    for (int i = 1; i < solution.getCustomers().size(); i++) {
-        if (solution.getCustomers().at(i).getID() == 0)
-            solution.getCustomers().erase(solution.getCustomers().begin() + i);
-    }
-
-    algorithm3();
-    solution.getCustomers().emplace_back(0);
-    for (int i = 1; i < solution.getCustomers().size(); i++) {
-        if (i % (CapacityOfVehicle + 1) == 0) {
-            solution.getCustomers().insert(solution.getCustomers().begin() + i, 0);
-        }
-    }
-
-    solution.getIDs();
-
-    runCars();
-    calScenarioValue();
+//
+//    // Best route (only dCustomer)
+//    solution = Chromosome(chromosomes->at(0));
+//
+//    // Check if there's an error occurs
+//    for (int i = 1; i < solution.getCustomers().size(); i++) {
+//        if (solution.getCustomers().at(i).getID() == 0)
+//            solution.getCustomers().erase(solution.getCustomers().begin() + i);
+//    }
+//
+//    algorithm3();
+//
+//    cout << "al3 finished" << endl;
+//
+//    solution.getCustomers().emplace_back(0);
+//    for (int i = 1; i < solution.getCustomers().size(); i++) {
+//        if (i % (CapacityOfVehicle + 1) == 0) {
+//            solution.getCustomers().insert(solution.getCustomers().begin() + i, 0);
+//        }
+//    }
+//
+//    solution.getIDs();
+//
+//    runCars();
+//    calScenarioValue();
 
     return 0;
 }

@@ -33,7 +33,7 @@ Chromosome::Chromosome(std::vector<Customer> &c, int nod) {
     uniform_real_distribution<float> unif(1, _customers.size() - 1);
     for (unsigned int i = 1; i < _customers.size(); i++) {
         int j = static_cast<int>(unif(generator));
-        usleep(1);
+        sleep(0.1);
         Customer temp = _customers.at(i);
         _customers.at(i) = _customers.at(j);
         _customers.at(j) = temp;
