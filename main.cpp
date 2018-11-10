@@ -43,7 +43,6 @@ void algorithm2() {
     child[0] = Chromosome();
     child[1] = Chromosome();
 
-
     for (int i = 0; i < 2; i++) {
         parent[i].setNOD(NumberOfDeterministicCustomers);
         child[i].setNOD(NumberOfDeterministicCustomers);
@@ -283,6 +282,14 @@ void init() {
     for (int i = 0; i < NumberOfDeterministicCustomers; i++) {
         L1.emplace_back(dCustomers.at(i));
     }
+
+    // Classified by probability
+    for (int i = 0; i < NumberOfStochasticCustomers - 1; i++) {
+        L2.emplace_back(sCustomers.at(i));
+    }
+
+    // Sorting
+    sort(L2.begin(), L2.end(), Customer::cmp);
 }
 
 void runCars() {
@@ -402,8 +409,6 @@ int main() {
     init();
 
     //Release Memory
-    L2.clear();
-    L2.shrink_to_fit();
     dCustomers.clear();
     dCustomers.shrink_to_fit();
     sCustomers.clear();
@@ -411,44 +416,51 @@ int main() {
     chromosomes->clear();
     chromosomes->shrink_to_fit();
 
-
     for (int i = 0; i < NumberOfChromosome; i++) {
         chromosomes->emplace_back(Chromosome(L1, NumberOfDeterministicCustomers));
     }
     L1.clear();
     L1.shrink_to_fit();
 
-    cout << "F" << endl;
+    cout << "Algorithm2 Starts" << endl;
     // Use Hybrid Generation Algorithm to generate a route.
+    sleep(0.1);
     for (int i = 0; i < NumberOfGeneration; i++) {
-        cout << i << endl;
         algorithm2();
     }
-//
-//    // Best route (only dCustomer)
-//    solution = Chromosome(chromosomes->at(0));
-//
-//    // Check if there's an error occurs
-//    for (int i = 1; i < solution.getCustomers().size(); i++) {
-//        if (solution.getCustomers().at(i).getID() == 0)
-//            solution.getCustomers().erase(solution.getCustomers().begin() + i);
-//    }
-//
-//    algorithm3();
-//
-//    cout << "al3 finished" << endl;
-//
-//    solution.getCustomers().emplace_back(0);
-//    for (int i = 1; i < solution.getCustomers().size(); i++) {
-//        if (i % (CapacityOfVehicle + 1) == 0) {
-//            solution.getCustomers().insert(solution.getCustomers().begin() + i, 0);
-//        }
-//    }
-//
-//    solution.getIDs();
-//
-//    runCars();
-//    calScenarioValue();
+    cout << "Algorithm2 Ends" << endl;
+
+    // Best route (only dCustomer)
+    solution = Chromosome(chromosomes->at(0));
+    delete (chromosomes);
+
+    // Check if there's an error occurs
+    sleep(0.1);
+    for (int i = 1; i < solution.getCustomers().size(); i++) {
+        if (solution.getCustomers().at(i).getID() == 0)
+            solution.getCustomers().erase(solution.getCustomers().begin() + i);
+    }
+
+    cout << "Algorithm3 Starts" << endl;
+    algorithm3();
+    cout << "Algorithm3 Ends" << endl;
+
+    cout << "al3 finished" << endl;
+    sleep(0.1);
+    solution.getCustomers().emplace_back(0);
+    for (int i = 1; i < solution.getCustomers().size(); i++) {
+        if (i % (CapacityOfVehicle + 1) == 0) {
+            solution.getCustomers().insert(solution.getCustomers().begin() + i, 0);
+        }
+    }
+
+    solution.getIDs();
+    cout << "runCars Starts" << endl;
+    runCars();
+    cout << "runCars Ends" << endl;
+
+
+    calScenarioValue();
 
     return 0;
 }

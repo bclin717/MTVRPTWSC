@@ -25,10 +25,10 @@
 
 using namespace std;
 
-static const int NumberOfVehicle = 15;
-static const int NumberOfVehicle2 = 3;
+static const int NumberOfVehicle = 1000;
+static const int NumberOfVehicle2 = 260;
 static const int CapacityOfVehicle = 4;
-static const float PenalizationFactor = 100;
+static const float PenalizationFactor = 1000;
 static const int serviceTime = 8;
 
 static int NumberOfDeterministicCustomers = 0;
@@ -36,7 +36,7 @@ static int NumberOfStochasticCustomers = 0;
 
 static const int NumberOfChromosome = 20;
 
-static const unsigned int NumberOfGeneration = 50;
+static const unsigned int NumberOfGeneration = 2000;
 
 static std::vector<int> Lbound; // ai.txt
 static std::vector<int> Ubound; // bi.txt
